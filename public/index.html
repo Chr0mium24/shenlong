@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>男皇后：戏台浮梦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              stage: {
+                bg: '#0f0a07',
+                panel: '#1e1511',
+                accent: '#e1b16a',
+                ink: '#f4e8d3',
+                blood: '#9f2e2e'
+              }
+            },
+            boxShadow: {
+              ember: '0 0 0 1px rgba(225, 177, 106, 0.35), 0 25px 50px -12px rgba(0, 0, 0, 0.8)'
+            },
+            fontFamily: {
+              serifcn: ['"Noto Serif SC"', '"Source Han Serif SC"', 'serif']
+            }
+          }
+        }
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap"
+    />
+    <style>
+      body {
+        background:
+          radial-gradient(circle at 20% 15%, rgba(159, 46, 46, 0.25), transparent 38%),
+          radial-gradient(circle at 78% 10%, rgba(225, 177, 106, 0.2), transparent 40%),
+          linear-gradient(135deg, #0f0a07 0%, #170d08 55%, #2b1711 100%);
+      }
+      .enter-fade {
+        animation: riseIn 420ms ease-out;
+      }
+      @keyframes riseIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-stage-ink font-serifcn">
+    <main class="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-4 px-4 py-6 lg:px-8">
+      <header class="flex flex-col justify-between gap-3 rounded-2xl border border-stage-accent/30 bg-stage-panel/80 p-4 shadow-ember backdrop-blur md:flex-row md:items-center">
+        <div>
+          <p class="text-xs tracking-[0.3em] text-stage-accent/90">INTERACTIVE STAGE</p>
+          <h1 id="game-title" class="text-2xl font-semibold text-stage-ink">男皇后：戏台浮梦</h1>
+        </div>
+        <nav class="flex flex-wrap gap-2 text-sm">
+          <button data-tab="game" class="tab-btn rounded-lg border border-stage-accent/50 px-3 py-1.5 text-stage-accent transition hover:bg-stage-accent/10">剧情模式</button>
+          <button data-tab="log" class="tab-btn rounded-lg border border-stage-accent/30 px-3 py-1.5 text-stage-ink/90 transition hover:bg-stage-accent/10">选择记录</button>
+          <button id="restart-btn" class="rounded-lg border border-stage-blood/50 px-3 py-1.5 text-stage-ink transition hover:bg-stage-blood/20">重开</button>
+        </nav>
+      </header>
+
+      <section class="grid flex-1 gap-4 lg:grid-cols-[280px_1fr]">
+        <aside class="rounded-2xl border border-stage-accent/25 bg-stage-panel/80 p-4 shadow-ember backdrop-blur">
+          <p class="mb-2 text-xs uppercase tracking-[0.3em] text-stage-accent/80">属性值</p>
+          <ul id="stats-list" class="space-y-2 text-sm"></ul>
+          <div class="mt-6 border-t border-stage-accent/20 pt-3 text-xs text-stage-ink/70">
+            阈值提示：大王好感度低于 10 会触发结局2。
+          </div>
+        </aside>
+
+        <section class="rounded-2xl border border-stage-accent/25 bg-stage-panel/85 p-5 shadow-ember backdrop-blur">
+          <div id="game-view" class="space-y-4"></div>
+          <div id="log-view" class="hidden space-y-3 text-sm"></div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
