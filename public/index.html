@@ -61,25 +61,22 @@
           <p class="text-xs tracking-[0.3em] text-stage-accent/90">INTERACTIVE STAGE</p>
           <h1 id="game-title" class="text-2xl font-semibold text-stage-ink">男皇后：戏台浮梦</h1>
         </div>
-        <nav class="flex flex-wrap gap-2 text-sm">
-          <button data-tab="game" class="tab-btn rounded-lg border border-stage-accent/50 px-3 py-1.5 text-stage-accent transition hover:bg-stage-accent/10">剧情模式</button>
-          <button data-tab="log" class="tab-btn rounded-lg border border-stage-accent/30 px-3 py-1.5 text-stage-ink/90 transition hover:bg-stage-accent/10">选择记录</button>
-          <button id="restart-btn" class="rounded-lg border border-stage-blood/50 px-3 py-1.5 text-stage-ink transition hover:bg-stage-blood/20">重开</button>
-        </nav>
+        <button id="restart-btn" class="rounded-lg border border-stage-blood/50 px-3 py-1.5 text-sm text-stage-ink transition hover:bg-stage-blood/20">
+          再入此梦
+        </button>
       </header>
 
       <section class="grid flex-1 gap-4 lg:grid-cols-[280px_1fr]">
         <aside class="rounded-2xl border border-stage-accent/25 bg-stage-panel/80 p-4 shadow-ember backdrop-blur">
-          <p class="mb-2 text-xs uppercase tracking-[0.3em] text-stage-accent/80">属性值</p>
+          <p class="mb-2 text-xs uppercase tracking-[0.3em] text-stage-accent/80">命盘</p>
           <ul id="stats-list" class="space-y-2 text-sm"></ul>
-          <div class="mt-6 border-t border-stage-accent/20 pt-3 text-xs text-stage-ink/70">
-            阈值提示：大王好感度低于 10 会触发结局2。
+          <div class="mt-6 border-t border-stage-accent/20 pt-3 text-xs text-stage-ink/70 leading-6">
+            一念生，一念灭。你在宫闱中的每次应答，都在改写戏台落幕的方向。
           </div>
         </aside>
 
         <section class="rounded-2xl border border-stage-accent/25 bg-stage-panel/85 p-5 shadow-ember backdrop-blur">
           <div id="game-view" class="space-y-4"></div>
-          <div id="log-view" class="hidden space-y-3 text-sm"></div>
         </section>
       </section>
     </main>
