@@ -171,6 +171,13 @@ body.ending-cinematic-mode > main > section > aside {
   border-left-color: rgba(95, 214, 191, 0.7);
   background: linear-gradient(90deg, rgba(95, 214, 191, 0.16), transparent 52%);
 }
+.story-line--dialogue-zigao {
+  border-left-color: rgba(240, 107, 127, 0.74);
+  background: linear-gradient(90deg, rgba(240, 107, 127, 0.2), transparent 52%);
+}
+.story-line--dialogue-zigao .story-line-speaker {
+  color: rgba(240, 107, 127, 0.92);
+}
 .story-line--verse {
   border: 1px solid rgba(225, 177, 106, 0.32);
   background: linear-gradient(180deg, rgba(225, 177, 106, 0.12), rgba(225, 177, 106, 0.03));

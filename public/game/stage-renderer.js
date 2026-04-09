@@ -198,7 +198,10 @@ const removeSpeakerPrefix = (text, speaker) => {
 const createCueHtml = (cue) => {
   const baseClass = cueClassByStyle[cue.style] || cueClassByStyle.narration;
   const isKingSpeech = cue.style === 'dialogue' && /大王|临川王/.test(cue.speaker || '');
-  const styleClass = isKingSpeech ? `${baseClass} story-line--dialogue-king` : baseClass;
+  const isZigaoSpeech = cue.style === 'dialogue' && /陈子高|子高|嫂嫂/.test(cue.speaker || '');
+  let styleClass = baseClass;
+  if (isKingSpeech) styleClass = `${baseClass} story-line--dialogue-king`;
+  if (isZigaoSpeech) styleClass = `${baseClass} story-line--dialogue-zigao`;
   const speaker = cue.speaker ? `<p class="story-line-speaker">${escapeHtml(cue.speaker)}</p>` : '';
   const text = removeSpeakerPrefix(cue.text, cue.speaker);
   return `
