@@ -207,6 +207,16 @@ const createCueHtml = (cue) => {
   `;
 };
 
+const createPlayerChoiceHtml = (text) => {
+  const cleaned = stripNumericEffectText(text || '');
+  return `
+    <div class="story-line story-line--answer">
+      <p class="story-line-speaker">你</p>
+      <p class="story-line-text">${escapeHtml(cleaned)}</p>
+    </div>
+  `;
+};
+
 const createPortraitHtml = (cue) => {
   if (!cue?.portrait && !cue?.speaker) {
     return '<div class="portrait-shell"></div>';
@@ -292,6 +302,20 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
   gameView.addEventListener('click', (event) => {
     const target = event.target.closest('[data-choice-id]');
     if (!target) return;
+    const lineHost = gameView.querySelector('[data-line-host]');
+    const answerText = target.querySelector('p')?.textContent?.trim() || target.textContent?.trim();
+    if (lineHost && answerText) {
+      const answerWrapper = document.createElement('div');
+      answerWrapper.innerHTML = createPlayerChoiceHtml(answerText);
+      const answerEl = answerWrapper.firstElementChild;
+      if (answerEl) {
+        lineHost.appendChild(answerEl);
+        requestAnimationFrame(() => {
+          answerEl.classList.add('is-in');
+          lineHost.scrollTop = lineHost.scrollHeight;
+        });
+      }
+    }
     const choiceBlock = gameView.querySelector('[data-choices]');
     if (choiceBlock) {
       choiceBlock.classList.add('hidden', 'pointer-events-none');

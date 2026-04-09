@@ -184,6 +184,21 @@ body.ending-cinematic-mode > main > section > aside {
   padding: 10px 12px;
   background: rgba(0, 0, 0, 0.24);
 }
+.story-line--answer {
+  margin-left: auto;
+  max-width: 86%;
+  border-right: 3px solid rgba(225, 177, 106, 0.7);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: linear-gradient(270deg, rgba(225, 177, 106, 0.16), transparent 56%);
+}
+.story-line--answer .story-line-speaker {
+  text-align: right;
+  color: rgba(248, 205, 142, 0.95);
+}
+.story-line--answer .story-line-text {
+  color: rgba(250, 238, 220, 0.96);
+}
 .portrait-shell {
   height: 100%;
   opacity: 0;
