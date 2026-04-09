@@ -1,5 +1,6 @@
 # 男皇后：戏台浮梦
 
+### [游戏链接](https://chr0mium24.github.io/shenlong/)
 基于台本改编的网页互动叙事游戏。
 
 - 前端：原生 JS + Tailwind（CDN）
