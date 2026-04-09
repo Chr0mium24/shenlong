@@ -48,29 +48,95 @@
       .choice-btn:hover .choice-omen {
         filter: saturate(1.2);
       }
-      .ending-fpv-stage {
-        background:
-          radial-gradient(circle at 50% 20%, rgba(225, 177, 106, 0.16), transparent 38%),
-          radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.05), transparent 55%),
-          #0a0705;
+      body.ending-cinematic-mode {
+        overflow: hidden;
       }
-      .ending-fpv-zoom {
-        animation: fpvPull 2.2s ease-out forwards;
+      body.ending-cinematic-mode > main > header,
+      body.ending-cinematic-mode > main > section > aside {
+        opacity: 0;
+        pointer-events: none;
       }
-      .ending-fpv-platform {
-        transform: scale(1.12);
+      .ending-cinematic {
+        background: radial-gradient(circle at 50% 18%, rgba(225, 177, 106, 0.08), transparent 40%), #030303;
       }
-      .ending-fpv-silhouette {
+      .ending-cinematic-world {
         position: absolute;
-        bottom: -12px;
-        width: 36px;
-        height: 95px;
-        border-radius: 18px 18px 8px 8px;
-        background: rgba(0, 0, 0, 0.92);
+        inset: 0;
+        transform-origin: 50% 58%;
+        animation: endingPullback 4.2s cubic-bezier(0.2, 0.6, 0.25, 1) forwards;
       }
-      .ending-fpv-s1 { left: 14%; }
-      .ending-fpv-s2 { left: 50%; transform: translateX(-50%); }
-      .ending-fpv-s3 { right: 14%; }
+      .ending-cinematic-mingpan-wrap {
+        position: absolute;
+        left: 50%;
+        top: 54%;
+        width: 300px;
+        height: 300px;
+        transform: translate(-50%, -50%);
+      }
+      .ending-cinematic-mingpan-glow {
+        position: absolute;
+        inset: 0;
+        border-radius: 999px;
+        opacity: 0.4;
+        filter: blur(26px);
+        animation: mingpanShrink 4.2s ease forwards;
+      }
+      .ending-cinematic-mingpan {
+        position: absolute;
+        inset: 22px;
+        border-radius: 999px;
+        border: 1px solid rgba(225, 177, 106, 0.35);
+        animation: mingpanSpin 1.2s linear infinite, mingpanShrink 4.2s ease forwards;
+      }
+      .ending-cinematic-stage {
+        position: absolute;
+        left: 50%;
+        top: 67%;
+        width: 300px;
+        height: 170px;
+        border: 1px solid rgba(225, 177, 106, 0.45);
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(44, 30, 20, 0.82), rgba(9, 9, 9, 0.95));
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 0 1px rgba(225, 177, 106, 0.2), 0 10px 45px rgba(0, 0, 0, 0.7);
+      }
+      .ending-cinematic-paper {
+        position: absolute;
+        bottom: 24px;
+        width: 56px;
+        height: 98px;
+        border: 1px solid rgba(245, 234, 215, 0.4);
+        background: linear-gradient(180deg, rgba(245, 234, 215, 0.25), rgba(245, 234, 215, 0.08));
+        clip-path: polygon(8% 4%, 92% 0, 100% 94%, 12% 100%);
+        animation: paperFloat 2.3s ease-in-out infinite alternate;
+      }
+      .ending-cinematic-paper--left {
+        left: 58px;
+      }
+      .ending-cinematic-paper--center {
+        left: 122px;
+        animation-delay: 180ms;
+      }
+      .ending-cinematic-paper--right {
+        left: 186px;
+        animation-delay: 360ms;
+      }
+      .ending-cinematic-crowd {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 10%;
+        height: 90px;
+      }
+      .ending-cinematic-crowd-item {
+        position: absolute;
+        bottom: 0;
+        width: 14px;
+        border-radius: 7px 7px 2px 2px;
+        background: rgba(0, 0, 0, 0.95);
+        opacity: 0;
+        animation: crowdFadeIn 900ms ease-out forwards;
+      }
       .story-line {
         opacity: 0;
         transform: translateY(8px);
@@ -186,15 +252,36 @@
           transform: rotate(360deg);
         }
       }
-      @keyframes fpvPull {
+      @keyframes endingPullback {
         0% {
-          transform: scale(1.32) translateY(6px);
-          opacity: 0.86;
+          transform: scale(1.24) translateY(8px);
+          filter: blur(0);
+        }
+        65% {
+          transform: scale(0.62) translateY(-84px);
+          filter: blur(0.4px);
         }
         100% {
-          transform: scale(0.86) translateY(-8px);
-          opacity: 1;
+          transform: scale(0.35) translateY(-175px);
+          filter: blur(1.1px);
         }
+      }
+      @keyframes mingpanSpin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes mingpanShrink {
+        0% { opacity: 1; transform: scale(1); }
+        80% { opacity: 0.95; }
+        100% { opacity: 0.25; transform: scale(0.28); }
+      }
+      @keyframes paperFloat {
+        from { transform: translateY(0px) rotate(-1deg); }
+        to { transform: translateY(-4px) rotate(1deg); }
+      }
+      @keyframes crowdFadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
       }
     </style>
   </head>

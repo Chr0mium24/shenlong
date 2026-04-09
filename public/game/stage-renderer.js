@@ -49,14 +49,6 @@ const createChoiceButton = (choice, statTheme) => {
   `;
 };
 
-const createTransitionChoiceButton = (choice) => {
-  return `
-    <button data-choice-id="${choice.id}" class="choice-btn rounded-xl border border-stage-accent/45 bg-black/45 px-4 py-3 text-left text-sm text-stage-ink transition hover:border-stage-accent hover:bg-stage-accent/10">
-      ${escapeHtml(choice.text)}
-    </button>
-  `;
-};
-
 const buildConicGradient = (items) => {
   const weighted = items.map((item) => ({
     ...item,
@@ -159,6 +151,37 @@ const getCueHoldMs = (cue, presentation) => {
   };
   const base = map[cue.style] || map.narration;
   return Math.round(base * (cue.speed || 1));
+};
+
+const createEndingCinematicHtml = (snapshot, statTheme) => {
+  const items = snapshot.statOrder.map((key) => ({
+    color: statTheme[key]?.color || '#e1b16a',
+    value: snapshot.state[key] ?? 0
+  }));
+  const mingpanGradient = buildConicGradient(items);
+  const crowd = Array.from({ length: 22 }, (_, i) => {
+    const x = ((i * 17) % 100) + (i % 3) * 0.5;
+    const h = 24 + ((i * 11) % 28);
+    const delay = (i % 7) * 90;
+    return `<span class="ending-cinematic-crowd-item" style="left:${x}%;height:${h}px;animation-delay:${delay}ms;"></span>`;
+  }).join('');
+
+  return `
+    <div class="ending-cinematic fixed inset-0 z-[80]">
+      <div class="ending-cinematic-world">
+        <div class="ending-cinematic-mingpan-wrap">
+          <div class="ending-cinematic-mingpan-glow" style="background:conic-gradient(${mingpanGradient});"></div>
+          <div class="ending-cinematic-mingpan" style="background:conic-gradient(${mingpanGradient});"></div>
+        </div>
+        <div class="ending-cinematic-stage">
+          <div class="ending-cinematic-paper ending-cinematic-paper--left"></div>
+          <div class="ending-cinematic-paper ending-cinematic-paper--center"></div>
+          <div class="ending-cinematic-paper ending-cinematic-paper--right"></div>
+        </div>
+        <div class="ending-cinematic-crowd">${crowd}</div>
+      </div>
+    </div>
+  `;
 };
 
 export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme }) => {
@@ -304,31 +327,26 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
     const node = snapshot.node;
     stopPlayback();
 
-    const choices = snapshot.choices
-      .map((choice) => {
-        if (node.kind === 'ending_transition') return createTransitionChoiceButton(choice);
-        return createChoiceButton(choice, statTheme);
-      })
-      .join('');
+    if (node.kind === 'ending_transition') {
+      const token = playbackToken;
+      const duration = node.durationMs || snapshot.presentation?.endingTransition?.durationMs || 3600;
+      const continueChoice = snapshot.choices[0];
+      document.body.classList.add('ending-cinematic-mode');
+      gameView.innerHTML = createEndingCinematicHtml(snapshot, statTheme);
 
-    const openingVisual =
-      node.kind === 'ending_transition'
-        ? `
-          <div class="overflow-hidden rounded-2xl border border-stage-accent/25 bg-black/60 p-4">
-            <div class="ending-fpv-stage relative h-64 rounded-xl border border-stage-accent/20 bg-black/70">
-              <div class="ending-fpv-silhouette ending-fpv-s1"></div>
-              <div class="ending-fpv-silhouette ending-fpv-s2"></div>
-              <div class="ending-fpv-silhouette ending-fpv-s3"></div>
-              <div class="ending-fpv-zoom absolute inset-0 flex items-center justify-center">
-                <div class="ending-fpv-platform rounded-xl border border-stage-accent/45 bg-stage-panel/70 px-6 py-3 text-center shadow-ember">
-                  <p class="text-[11px] tracking-[0.22em] text-stage-accent/85">${escapeHtml(node.act)}</p>
-                  <p class="mt-1 text-lg font-semibold text-stage-ink">${escapeHtml(node.title)}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        `
-        : '';
+      setTimer(() => {
+        if (token !== playbackToken) return;
+        document.body.classList.remove('ending-cinematic-mode');
+        if (continueChoice?.id) {
+          onChoose(continueChoice.id);
+        }
+      }, duration);
+      return;
+    }
+
+    document.body.classList.remove('ending-cinematic-mode');
+
+    const choices = snapshot.choices.map((choice) => createChoiceButton(choice, statTheme)).join('');
 
     gameView.innerHTML = `
       <article class="enter-fade space-y-4">
@@ -338,7 +356,6 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
             <h2 class="text-xl font-semibold text-stage-ink">${escapeHtml(node.title)}</h2>
           </div>
         </div>
-        ${openingVisual}
         <div class="story-stage-panel grid gap-3 rounded-xl border border-stage-accent/15 bg-black/20 p-3 lg:grid-cols-[1fr_220px]">
           <div data-line-host class="story-line-host min-h-[120px]"></div>
           <div data-portrait-host class="portrait-host min-h-[120px]"></div>

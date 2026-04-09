@@ -27,6 +27,9 @@ export const shenlongPack = {
       noteMs: 1400,
       fadeMs: 260
     },
+    endingTransition: {
+      durationMs: 4200
+    },
     cast: [
       {
         id: 'king',
@@ -57,6 +60,7 @@ export const shenlongPack = {
   endingTransition: {
     act: '终幕',
     title: '戏台之下',
+    durationMs: 4200,
     lines: [
       '利用一种类似第一人称飞行器（FPV）急速拉远的空间感，把你从沉浸式2D对话中强行拽出，展现戏台本质。',
       '[游戏画面与脚本] 大王（临川王）：在这几抹胭脂色的春光里，明月又转过了树梢。',

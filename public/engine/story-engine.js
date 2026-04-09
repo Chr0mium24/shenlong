@@ -178,6 +178,7 @@ export class StoryEngine {
       kind: 'ending_transition',
       act: transition.act || '终幕',
       title: transition.title || '戏台之下',
+      durationMs: transition.durationMs || this.#pack.presentation?.endingTransition?.durationMs || 3600,
       lines: transition.lines || [],
       choices: [
         {
