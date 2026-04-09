@@ -213,7 +213,7 @@ const createPlayerChoiceHtml = (text) => {
   const cleaned = stripNumericEffectText(text || '');
   return `
     <div class="story-line story-line--answer">
-      <p class="story-line-speaker">你</p>
+      <p class="story-line-answer-tag">你的回答</p>
       <p class="story-line-text">${escapeHtml(cleaned)}</p>
     </div>
   `;

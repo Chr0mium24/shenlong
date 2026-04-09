@@ -1,4 +1,5 @@
 import { story } from './story.js';
+import { manualLineCues } from './manual-line-cues.js';
 
 export const shenlongPack = {
   id: 'shenlong',
@@ -20,6 +21,7 @@ export const shenlongPack = {
     feminine: 0
   },
   presentation: {
+    manualLineCues,
     linePacing: {
       narrationMs: 1200,
       dialogueMs: 1650,

@@ -190,18 +190,23 @@ body.ending-cinematic-mode > main > section > aside {
 }
 .story-line--answer {
   margin-left: auto;
-  max-width: 86%;
-  border-right: 3px solid rgba(225, 177, 106, 0.7);
-  border-radius: 10px;
-  padding: 8px 10px;
-  background: linear-gradient(270deg, rgba(225, 177, 106, 0.16), transparent 56%);
+  width: fit-content;
+  max-width: 72%;
+  border: 1px solid rgba(225, 177, 106, 0.45);
+  border-radius: 10px 10px 2px 10px;
+  padding: 6px 10px;
+  background: linear-gradient(270deg, rgba(225, 177, 106, 0.14), rgba(225, 177, 106, 0.04));
 }
-.story-line--answer .story-line-speaker {
+.story-line-answer-tag {
+  margin: 0 0 4px;
   text-align: right;
-  color: rgba(248, 205, 142, 0.95);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(225, 177, 106, 0.9);
 }
 .story-line--answer .story-line-text {
   color: rgba(250, 238, 220, 0.96);
+  line-height: 1.5;
 }
 .portrait-shell {
   height: 100%;

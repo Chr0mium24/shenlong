@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "extract:dialogue": "node scripts/extract-dialogue-lines.mjs"
   },
   "dependencies": {
     "express": "^4.21.2"

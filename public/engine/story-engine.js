@@ -209,16 +209,31 @@ export class StoryEngine {
   #buildLineCues(node) {
     const lines = Array.isArray(node.lines) ? node.lines : [];
     const cast = this.#pack.presentation?.cast || [];
+    const manualLineCues = this.#pack.presentation?.manualLineCues || {};
 
     return lines.map((line, index) => {
       if (typeof line === 'object' && line !== null) {
+        const speaker = line.speaker || null;
         return {
           id: line.id || `${node.id}-line-${index}`,
           text: line.text || '',
           style: line.style || 'narration',
-          speaker: line.speaker || null,
+          speaker,
           speed: line.speed || 1,
-          portrait: line.portrait || null
+          portrait: line.portrait || this.#resolvePortrait(speaker, cast)
+        };
+      }
+
+      const manual = manualLineCues[`${node.id}:${index}`];
+      if (manual) {
+        const speaker = manual.speaker || null;
+        return {
+          id: manual.id || `${node.id}-line-${index}`,
+          text: manual.text || String(line || ''),
+          style: manual.style || 'narration',
+          speaker,
+          speed: manual.speed || 1,
+          portrait: manual.portrait || this.#resolvePortrait(speaker, cast)
         };
       }
 
