@@ -48,6 +48,29 @@
       .choice-btn:hover .choice-omen {
         filter: saturate(1.2);
       }
+      .ending-fpv-stage {
+        background:
+          radial-gradient(circle at 50% 20%, rgba(225, 177, 106, 0.16), transparent 38%),
+          radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.05), transparent 55%),
+          #0a0705;
+      }
+      .ending-fpv-zoom {
+        animation: fpvPull 2.2s ease-out forwards;
+      }
+      .ending-fpv-platform {
+        transform: scale(1.12);
+      }
+      .ending-fpv-silhouette {
+        position: absolute;
+        bottom: -12px;
+        width: 36px;
+        height: 95px;
+        border-radius: 18px 18px 8px 8px;
+        background: rgba(0, 0, 0, 0.92);
+      }
+      .ending-fpv-s1 { left: 14%; }
+      .ending-fpv-s2 { left: 50%; transform: translateX(-50%); }
+      .ending-fpv-s3 { right: 14%; }
       @keyframes riseIn {
         from {
           opacity: 0;
@@ -64,6 +87,16 @@
         }
         to {
           transform: rotate(360deg);
+        }
+      }
+      @keyframes fpvPull {
+        0% {
+          transform: scale(1.32) translateY(6px);
+          opacity: 0.86;
+        }
+        100% {
+          transform: scale(0.86) translateY(-8px);
+          opacity: 1;
         }
       }
     </style>

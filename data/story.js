@@ -17,7 +17,7 @@ export const story = [
       },
       {
         id: 'start_b',
-        text: '转身回头隐入群众（结局1：芸芸众生）',
+        text: '转身回头隐入群众',
         next: 'ending_1'
       }
     ]
@@ -222,7 +222,7 @@ export const story = [
       },
       {
         id: 'third_b',
-        text: '“本宫乃六宫之主，做不得从了你的事。”（结局4）',
+        text: '“本宫乃六宫之主，做不得从了你的事。”',
         next: 'ending_4'
       }
     ]
@@ -258,7 +258,7 @@ export const story = [
     choices: [
       {
         id: 'fourth_a',
-        text: '“都是玉华公主屡次纠缠，臣妾不敢当面拂金枝玉叶。”（结局5）',
+        text: '“都是玉华公主屡次纠缠，臣妾不敢当面拂金枝玉叶。”',
         next: 'ending_5'
       },
       {
@@ -280,13 +280,8 @@ export const story = [
     ],
     choices: [
       {
-        id: 'e1_stage',
-        text: '看穿戏台（终幕）',
-        next: 'stage_reveal'
-      },
-      {
         id: 'e1_restart',
-        text: '重新开局',
+        text: '再入此梦',
         reset: true,
         next: 'start'
       }
@@ -304,13 +299,8 @@ export const story = [
     ],
     choices: [
       {
-        id: 'e2_stage',
-        text: '看穿戏台（终幕）',
-        next: 'stage_reveal'
-      },
-      {
         id: 'e2_restart',
-        text: '重新开局',
+        text: '再入此梦',
         reset: true,
         next: 'start'
       }
@@ -328,13 +318,8 @@ export const story = [
     ],
     choices: [
       {
-        id: 'e3_stage',
-        text: '看穿戏台（终幕）',
-        next: 'stage_reveal'
-      },
-      {
         id: 'e3_restart',
-        text: '重新开局',
+        text: '再入此梦',
         reset: true,
         next: 'start'
       }
@@ -352,13 +337,8 @@ export const story = [
     ],
     choices: [
       {
-        id: 'e4_stage',
-        text: '看穿戏台（终幕）',
-        next: 'stage_reveal'
-      },
-      {
         id: 'e4_restart',
-        text: '重新开局',
+        text: '再入此梦',
         reset: true,
         next: 'start'
       }
@@ -377,13 +357,8 @@ export const story = [
     ],
     choices: [
       {
-        id: 'e5_stage',
-        text: '看穿戏台（终幕）',
-        next: 'stage_reveal'
-      },
-      {
         id: 'e5_restart',
-        text: '重新开局',
+        text: '再入此梦',
         reset: true,
         next: 'start'
       }
@@ -403,35 +378,8 @@ export const story = [
     ],
     choices: [
       {
-        id: 'e6_stage',
-        text: '看穿戏台（终幕）',
-        next: 'stage_reveal'
-      },
-      {
         id: 'e6_restart',
-        text: '重新开局',
-        reset: true,
-        next: 'start'
-      }
-    ]
-  },
-  {
-    id: 'stage_reveal',
-    act: '终幕',
-    title: '戏台之下',
-    ending: true,
-    lines: [
-      '镜头突然脱离第一人称，以极快速度向后上方拉远。',
-      '原本2D人物立绘，变成巨大黑色空间里的纸片人。',
-      '镜头继续拉远，露出一个孤零零亮着灯的戏台；台下是无数没有面目的黑色人影。',
-      '大王（临川王）：“在这几抹胭脂色的春光里，明月又转过了树梢。”',
-      '最终独白：莫笑台中雌雄假，看客同是梦里人。',
-      '屏幕黑下，浮现白字：剧终。感谢游玩。'
-    ],
-    choices: [
-      {
-        id: 'stage_restart',
-        text: '重新开局',
+        text: '再入此梦',
         reset: true,
         next: 'start'
       }

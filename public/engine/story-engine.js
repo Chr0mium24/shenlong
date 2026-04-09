@@ -1,4 +1,5 @@
 const clone = (value) => structuredClone(value);
+const ENDING_TRANSITION_NEXT = '__resume_pending_ending__';
 
 export class StoryEngine {
   #pack;
@@ -6,6 +7,8 @@ export class StoryEngine {
   #state;
   #history;
   #listeners;
+  #virtualNode;
+  #pendingEndingNodeId;
 
   constructor(pack) {
     if (!pack?.nodes?.length) {
@@ -17,6 +20,8 @@ export class StoryEngine {
     this.#listeners = new Set();
     this.#history = [];
     this.#state = clone(pack.initialState);
+    this.#virtualNode = null;
+    this.#pendingEndingNodeId = null;
 
     this.#enterNode(this.#state.currentNode);
   }
@@ -30,6 +35,8 @@ export class StoryEngine {
   reset() {
     this.#history = [];
     this.#state = clone(this.#pack.initialState);
+    this.#virtualNode = null;
+    this.#pendingEndingNodeId = null;
     this.#enterNode(this.#state.currentNode);
     return this.getSnapshot();
   }
@@ -45,6 +52,17 @@ export class StoryEngine {
       return this.reset();
     }
 
+    if (this.#virtualNode && choice.next === ENDING_TRANSITION_NEXT) {
+      const pendingId = this.#pendingEndingNodeId;
+      if (!pendingId) {
+        return this.getSnapshot();
+      }
+      this.#pendingEndingNodeId = null;
+      this.#virtualNode = null;
+      this.#enterNode(pendingId);
+      return this.getSnapshot();
+    }
+
     this.#applyEffects(choice.effects);
     this.#history.push({
       nodeId: node.id,
@@ -53,11 +71,21 @@ export class StoryEngine {
       choiceText: choice.text
     });
 
+    if (this.#shouldTriggerEndingTransition(choice.next)) {
+      this.#pendingEndingNodeId = choice.next;
+      this.#virtualNode = this.#buildEndingTransitionNode();
+      this.#notify();
+      return this.getSnapshot();
+    }
+
     this.#enterNode(choice.next);
     return this.getSnapshot();
   }
 
   getCurrentNode() {
+    if (this.#virtualNode) {
+      return this.#virtualNode;
+    }
     return this.#mustNode(this.#state.currentNode);
   }
 
@@ -102,6 +130,7 @@ export class StoryEngine {
     visited.add(nodeId);
 
     const node = this.#mustNode(nodeId);
+    this.#virtualNode = null;
     this.#state.currentNode = nodeId;
     this.#applyEffects(node.enterEffects);
 
@@ -131,5 +160,29 @@ export class StoryEngine {
     if (typeof condition.lt === 'number' && value >= condition.lt) return false;
     if (typeof condition.eq === 'number' && value !== condition.eq) return false;
     return true;
+  }
+
+  #shouldTriggerEndingTransition(targetNodeId) {
+    if (!this.#pack.endingTransition) return false;
+    const targetNode = this.#nodesById.get(targetNodeId);
+    return Boolean(targetNode?.ending);
+  }
+
+  #buildEndingTransitionNode() {
+    const transition = this.#pack.endingTransition;
+    return {
+      id: '__ending_transition__',
+      kind: 'ending_transition',
+      act: transition.act || '终幕',
+      title: transition.title || '戏台之下',
+      lines: transition.lines || [],
+      choices: [
+        {
+          id: 'ending_transition_continue',
+          text: transition.continueText || '看清此局',
+          next: ENDING_TRANSITION_NEXT
+        }
+      ]
+    };
   }
 }

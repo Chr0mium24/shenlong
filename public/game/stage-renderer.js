@@ -38,6 +38,14 @@ const createChoiceButton = (choice, statTheme) => {
   `;
 };
 
+const createTransitionChoiceButton = (choice) => {
+  return `
+    <button data-choice-id="${choice.id}" class="choice-btn rounded-xl border border-stage-accent/45 bg-black/45 px-4 py-3 text-left text-sm text-stage-ink transition hover:border-stage-accent hover:bg-stage-accent/10">
+      ${choice.text}
+    </button>
+  `;
+};
+
 const buildConicGradient = (items) => {
   const weighted = items.map((item) => ({
     ...item,
@@ -65,9 +73,9 @@ const createOrbitalNodes = (items) => {
       const y = 50 + Math.sin(rad) * 37;
 
       return `
-        <div class="absolute -translate-x-1/2 -translate-y-1/2 rounded-lg border px-2 py-1 text-center backdrop-blur-sm"
+       <div class="absolute -translate-x-1/2 -translate-y-1/2 rounded-lg border px-2 py-1 text-center backdrop-blur-sm"
           style="left:${x}%;top:${y}%;border-color:${item.color}77;background:${item.color}1f;box-shadow:0 0 22px ${item.color}30;">
-          <p class="text-[10px] leading-none text-stage-ink/85">${item.label}</p>
+        <p class="text-[10px] leading-none text-stage-ink/85">${item.label}</p>
           <p class="mt-1 text-sm font-semibold leading-none" style="color:${item.color};">${item.value}</p>
         </div>
       `;
@@ -138,6 +146,33 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
   const renderNode = (snapshot) => {
     const node = snapshot.node;
+
+    if (node.kind === 'ending_transition') {
+      const lines = node.lines.map((line) => `<p class="leading-7 text-stage-ink/90">${line}</p>`).join('');
+      const choices = snapshot.choices.map((choice) => createTransitionChoiceButton(choice)).join('');
+
+      gameView.innerHTML = `
+        <article class="enter-fade space-y-4">
+          <div class="overflow-hidden rounded-2xl border border-stage-accent/25 bg-black/60 p-4">
+            <div class="ending-fpv-stage relative h-64 rounded-xl border border-stage-accent/20 bg-black/70">
+              <div class="ending-fpv-silhouette ending-fpv-s1"></div>
+              <div class="ending-fpv-silhouette ending-fpv-s2"></div>
+              <div class="ending-fpv-silhouette ending-fpv-s3"></div>
+              <div class="ending-fpv-zoom absolute inset-0 flex items-center justify-center">
+                <div class="ending-fpv-platform rounded-xl border border-stage-accent/45 bg-stage-panel/70 px-6 py-3 text-center shadow-ember">
+                  <p class="text-[11px] tracking-[0.22em] text-stage-accent/85">${node.act}</p>
+                  <p class="mt-1 text-lg font-semibold text-stage-ink">${node.title}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3 text-[15px]">${lines}</div>
+          <div class="grid gap-2 pt-2">${choices}</div>
+        </article>
+      `;
+      return;
+    }
+
     const lines = node.lines.map((line) => `<p class="leading-8 text-stage-ink/90">${line}</p>`).join('');
     const choices = snapshot.choices.map((choice) => createChoiceButton(choice, statTheme)).join('');
 
