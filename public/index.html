@@ -34,8 +34,8 @@
     />
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body class="min-h-screen text-stage-ink font-serifcn">
-    <main class="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-4 px-4 py-6 lg:px-8">
+  <body class="h-screen overflow-hidden text-stage-ink font-serifcn">
+    <main class="mx-auto flex h-full w-full max-w-7xl flex-col gap-4 overflow-hidden px-4 py-6 lg:px-8">
       <header class="flex flex-col justify-between gap-3 rounded-2xl border border-stage-accent/30 bg-stage-panel/80 p-4 shadow-ember backdrop-blur md:flex-row md:items-center">
         <div>
           <p class="text-xs tracking-[0.3em] text-stage-accent/90">INTERACTIVE STAGE</p>
@@ -46,7 +46,7 @@
         </button>
       </header>
 
-      <section class="grid flex-1 gap-4 lg:grid-cols-[280px_1fr]">
+      <section class="grid min-h-0 flex-1 gap-4 lg:grid-cols-[280px_1fr]">
         <aside class="rounded-2xl border border-stage-accent/25 bg-stage-panel/80 p-4 shadow-ember backdrop-blur">
           <p class="mb-2 text-xs uppercase tracking-[0.3em] text-stage-accent/80">命盘</p>
           <div id="stats-list" class="text-sm"></div>
@@ -55,7 +55,7 @@
           </div>
         </aside>
 
-        <section class="rounded-2xl border border-stage-accent/25 bg-stage-panel/85 p-5 shadow-ember backdrop-blur">
+        <section class="min-h-0 overflow-hidden rounded-2xl border border-stage-accent/25 bg-stage-panel/85 p-5 shadow-ember backdrop-blur">
           <div id="game-view" class="space-y-4"></div>
         </section>
       </section>
