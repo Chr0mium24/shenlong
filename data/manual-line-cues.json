@@ -1,35 +1,25 @@
 {
   "start:0": {
     "style": "narration",
-    "text": "男皇后。",
-    "speed": 1
-  },
-  "start:1": {
-    "style": "note",
-    "text": "属性值：1.须眉骨 2.红粉相 3.大王好感度 4.面具值。",
-    "speed": 1.05
-  },
-  "start:2": {
-    "style": "narration",
     "text": "你姓陈名子高，自小于江南长大。幼时家门显赫，后父母双亡，家道中落。",
     "speed": 1
   },
-  "start:3": {
+  "start:1": {
     "style": "narration",
     "text": "你现在在干戈营中打杂。",
     "speed": 1
   },
-  "start:4": {
+  "start:2": {
     "style": "narration",
     "text": "于干戈营中，突然有一天锣鼓喧天，好似什么军队来了。你只见人高马大，这将军好威风，似打胜仗归来。",
     "speed": 1
   },
-  "start:5": {
+  "start:3": {
     "style": "narration",
     "text": "忽有一日锣鼓喧天，似有大军凯旋。你看见那将军人高马大、披风猎猎，受万众瞩目。",
     "speed": 1
   },
-  "start:6": {
+  "start:4": {
     "style": "narration",
     "text": "这时，你有两个选择。",
     "speed": 1
