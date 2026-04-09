@@ -2,15 +2,21 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { readFile, writeFile } from 'node:fs/promises';
-import { shenlongPack } from './data/shenlong-pack.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const packPath = path.join(__dirname, 'data', 'shenlong-pack.json');
 const manualCuesPath = path.join(__dirname, 'data', 'manual-line-cues.json');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+const readPack = async () => {
+  const content = await readFile(packPath, 'utf8');
+  const parsed = JSON.parse(content);
+  return parsed && typeof parsed === 'object' ? parsed : {};
+};
 
 const readManualCues = async () => {
   try {
@@ -30,13 +36,15 @@ const writeManualCues = async (cues) => {
 };
 
 const withManualCues = async () => {
+  const shenlongPack = await readPack();
   const manualLineCues = await readManualCues();
-  const pack = structuredClone(shenlongPack);
-  pack.presentation = {
-    ...(pack.presentation || {}),
-    manualLineCues
+  return {
+    ...shenlongPack,
+    presentation: {
+      ...(shenlongPack.presentation || {}),
+      manualLineCues
+    }
   };
-  return pack;
 };
 
 app.get('/api/story', async (_req, res, next) => {

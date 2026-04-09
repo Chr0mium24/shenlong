@@ -1,134 +1,449 @@
 {
+  "start:0": {
+    "style": "narration",
+    "text": "男皇后。",
+    "speed": 1
+  },
   "start:1": {
     "style": "note",
+    "text": "属性值：1.须眉骨 2.红粉相 3.大王好感度 4.面具值。",
     "speed": 1.05
+  },
+  "start:2": {
+    "style": "narration",
+    "text": "你姓陈名子高，自小于江南长大。幼时家门显赫，后父母双亡，家道中落。",
+    "speed": 1
+  },
+  "start:3": {
+    "style": "narration",
+    "text": "你现在在干戈营中打杂。",
+    "speed": 1
+  },
+  "start:4": {
+    "style": "narration",
+    "text": "于干戈营中，突然有一天锣鼓喧天，好似什么军队来了。你只见人高马大，这将军好威风，似打胜仗归来。",
+    "speed": 1
+  },
+  "start:5": {
+    "style": "narration",
+    "text": "忽有一日锣鼓喧天，似有大军凯旋。你看见那将军人高马大、披风猎猎，受万众瞩目。",
+    "speed": 1
+  },
+  "start:6": {
+    "style": "narration",
+    "text": "这时，你有两个选择。",
+    "speed": 1
+  },
+  "block_horse:0": {
+    "style": "narration",
+    "text": "你只身拦下马头。将军一把提起你，浓烈血腥与汗臭窜入鼻孔。",
+    "speed": 1
   },
   "block_horse:1": {
     "style": "dialogue",
-    "speaker": "将军",
-    "text": "“你这小厮，胆敢拦我马头，怕不是个敌国奸细，看我不杀你做个好彩头！”"
+    "text": "“你这小厮，胆敢拦我马头，怕不是个敌国奸细，看我不杀你做个好彩头！”",
+    "speed": 1,
+    "speaker": "将军"
+  },
+  "block_horse:2": {
+    "style": "narration",
+    "text": "你耳膜几近撕裂，却不敢有一丝反抗。",
+    "speed": 1
   },
   "block_horse:3": {
     "style": "dialogue",
-    "speaker": "兵卒",
-    "text": "“这小厮貌美如花，拿去献给大王讨头功！”"
+    "text": "“这小厮貌美如花，拿去献给大王讨头功！”",
+    "speed": 1,
+    "speaker": "兵卒"
   },
   "block_horse:4": {
     "style": "dialogue",
-    "speaker": "兵卒",
-    "text": "“好办法！白天就打发去做些杂活，夜间……就给兄弟们好好用用！”"
+    "text": "“好办法！白天就打发去做些杂活，夜间……就给兄弟们好好用用！”",
+    "speed": 1,
+    "speaker": "兵卒"
   },
   "block_horse:5": {
     "style": "dialogue",
-    "speaker": "另一小兵",
-    "text": "“将军，这妖物可不是我们用的了的，听闻大王最爱男风，我们拿他讨个头功！”"
+    "text": "“将军，这妖物可不是我们用的了的，听闻大王最爱男风，我们拿他讨个头功！”",
+    "speed": 1,
+    "speaker": "另一小兵"
+  },
+  "block_horse:6": {
+    "style": "narration",
+    "text": "你没有别的法子，只得随着大军前行。",
+    "speed": 1
   },
   "march_to_king:0": {
     "style": "dialogue",
-    "speaker": "将军",
-    "text": "“大王召见了，你可要好好表现。”"
+    "text": "“大王召见了，你可要好好表现。”",
+    "speed": 1,
+    "speaker": "将军"
   },
   "march_to_king:1": {
     "style": "dialogue",
-    "speaker": "将军",
-    "text": "“见到大王要行跪拜之礼，不可直视大王。”"
+    "text": "“见到大王要行跪拜之礼，不可直视大王。”",
+    "speed": 1,
+    "speaker": "将军"
+  },
+  "march_to_king:2": {
+    "style": "narration",
+    "text": "走入营帐，旁边摆满的是各种军械武器。",
+    "speed": 1
   },
   "march_to_king:3": {
     "style": "dialogue",
-    "speaker": "将军",
-    "text": "“大王，军前拿了个小生，眉清目秀，还未及冠。”"
+    "text": "“大王，军前拿了个小生，眉清目秀，还未及冠。”",
+    "speed": 1,
+    "speaker": "将军"
   },
   "march_to_king:4": {
     "style": "dialogue",
-    "speaker": "大王",
-    "text": "“你姓甚名谁？”"
+    "text": "“你姓甚名谁？”",
+    "speed": 1,
+    "speaker": "大王"
   },
   "answer_age:0": {
     "style": "dialogue",
-    "speaker": "大王",
-    "text": "“你今年多少年纪了？有什么本事？”"
+    "text": "“你今年多少年纪了？有什么本事？”",
+    "speed": 1,
+    "speaker": "大王"
   },
   "answer_loyalty:0": {
     "style": "dialogue",
-    "speaker": "大王",
-    "text": "“你确定要从了我？”"
+    "text": "“你确定要从了我？”",
+    "speed": 1,
+    "speaker": "大王"
+  },
+  "loyalty_check:0": {
+    "style": "narration",
+    "text": "你低头伏地，等候发落。",
+    "speed": 1
   },
   "crowned:0": {
     "style": "dialogue",
-    "speaker": "大王",
-    "text": "“我怎么舍得割你？我看你模样好似女子，就选你入宫。”"
+    "text": "“我怎么舍得割你？我看你模样好似女子，就选你入宫。”",
+    "speed": 1,
+    "speaker": "大王"
   },
   "crowned:1": {
     "style": "dialogue",
-    "speaker": "陈子高",
-    "text": "“我情愿学那梳妆粉黛，着那繁长裙摆，安能辨我是雌雄？”"
+    "text": "“我情愿学那梳妆粉黛，着那繁长裙摆，安能辨我是雌雄？”",
+    "speed": 1,
+    "speaker": "陈子高"
   },
   "crowned:2": {
     "style": "dialogue",
-    "speaker": "大王",
-    "text": "“取我那白玉环鸾带和鲜明罩甲与他穿，明儿立你做个正宫皇后。”"
+    "text": "“取我那白玉环鸾带和鲜明罩甲与他穿，明儿立你做个正宫皇后。”",
+    "speed": 1,
+    "speaker": "大王"
   },
   "crowned:3": {
     "style": "dialogue",
-    "speaker": "陈子高",
-    "text": "“古有女子做得了皇帝，今当有男子披得了凤冠霞帔！”"
+    "text": "“古有女子做得了皇帝，今当有男子披得了凤冠霞帔！”",
+    "speed": 1,
+    "speaker": "陈子高"
+  },
+  "second_act:0": {
+    "style": "verse",
+    "text": "「覆雨翻云总一般，桃花错做杏花看。大王爷军中带得个妖东西，将他妆作女妆，要立他做娘娘」",
+    "speed": 1.2
+  },
+  "second_act:1": {
+    "style": "narration",
+    "text": "大王这天中明月，给他那野猴子摘了成。",
+    "speed": 1
+  },
+  "second_act:2": {
+    "style": "narration",
+    "text": "自你随军入宫，风言风语从未断绝。有人说你妖怪降世，有人说大王被下了蛊。",
+    "speed": 1
+  },
+  "second_act:3": {
+    "style": "narration",
+    "text": "你知道如果当时不这么回答，也只有充军苦了的份，但是如今女妆粉黛的，你很是不习惯。",
+    "speed": 1
+  },
+  "second_act:4": {
+    "style": "narration",
+    "text": "侍女将水粉往你脸上抹，你只觉米糊糊脸；胭脂拍腮、墨笔描眉，终日粉末缠身。",
+    "speed": 1
+  },
+  "second_act:5": {
+    "style": "narration",
+    "text": "你恍惚又回到小时候，那时穿衣出行皆有人伺候，不似军营里整日受人笑骂。",
+    "speed": 1
+  },
+  "second_act:6": {
+    "style": "narration",
+    "text": "你看铜镜中的自己，娇滴滴胜过女子万千。万千女子苦求的后位，你竟因美貌轻易得之。",
+    "speed": 1
+  },
+  "second_act:7": {
+    "style": "narration",
+    "text": "宫女鱼贯而入，你知今日是大王立你为皇后的日子，正要踏入宫殿。",
+    "speed": 1
   },
   "second_act:8": {
-    "style": "narration"
+    "style": "narration",
+    "text": "立后大典锣鼓喧天，你心中五味杂陈：既感君恩，又羞于“以色侍人”，无奈苦笑。",
+    "speed": 1
+  },
+  "second_act:9": {
+    "style": "narration",
+    "text": "有对于君恩的感激，你想过假若你是女子，纵然有沉鱼落雁之姿、花容月貌之势，也未见得能有如今这么容易。",
+    "speed": 1
+  },
+  "second_act:10": {
+    "style": "narration",
+    "text": "有对于自己身为男子的羞愧。你从小饱读诗书，也曾是名门望族；向来都说男子当齐家治国平天下，以色侍人怕不是列不进族谱。",
+    "speed": 1
+  },
+  "second_act:11": {
+    "style": "narration",
+    "text": "礼成入洞房，你必须表态。",
+    "speed": 1
   },
   "second_favor:0": {
     "style": "dialogue",
-    "speaker": "大王",
-    "text": "“好似周小史，传颂千古。何必忧虑两雄并立。”"
+    "text": "“好似周小史，传颂千古。何必忧虑两雄并立。”",
+    "speed": 1,
+    "speaker": "大王"
   },
   "second_favor:1": {
     "style": "dialogue",
-    "speaker": "大王",
-    "text": "“即使头戴金貂的高官显贵，在你面前也该自惭形秽。”"
+    "text": "“即使头戴金貂的高官显贵，在你面前也该自惭形秽。”",
+    "speed": 1,
+    "speaker": "大王"
+  },
+  "second_favor:2": {
+    "style": "narration",
+    "text": "他在你的衣服上题诗作画。你察觉这份恩宠，抵得过多少鸳鸯凤凰。",
+    "speed": 1
+  },
+  "second_favor:3": {
+    "style": "narration",
+    "text": "后宫佳丽三千跪拜于下，你在众人陪衬中，恍惚自己真如天仙。",
+    "speed": 1
+  },
+  "third_act_intro:0": {
+    "style": "narration",
+    "text": "大王有一位特别宠爱的妹妹，众人称玉华公主。她云鬓斜插金凤，明珠垂耳，眉眼之间只留一抹余光看人。",
+    "speed": 1
+  },
+  "third_act_intro:1": {
+    "style": "narration",
+    "text": "纵然她有些许骄纵，但有时却也有些可爱。",
+    "speed": 1
   },
   "third_act_intro:2": {
     "style": "dialogue",
-    "speaker": "玉华公主",
-    "text": "“本公主倒要瞧瞧，能被哥哥瞧上的女人如何倾国倾城。”"
+    "text": "“本公主倒要瞧瞧，能被哥哥瞧上的女人如何倾国倾城。”",
+    "speed": 1,
+    "speaker": "玉华公主"
+  },
+  "third_act_intro:3": {
+    "style": "narration",
+    "text": "往后她隔三差五来找你，你也只当作妹妹一般。先是撒娇借鞋，后又言语轻薄，甚至以自缢相逼。",
+    "speed": 1
   },
   "third_act_intro:4": {
     "style": "dialogue",
-    "speaker": "玉华公主",
-    "text": "“嫂嫂，你那鞋儿借我穿穿。嫂嫂，你可莫要执迷不悟啊。”"
+    "text": "“嫂嫂，你那鞋儿借我穿穿。嫂嫂，你可莫要执迷不悟啊。”",
+    "speed": 1,
+    "speaker": "玉华公主"
   },
   "third_act_intro:5": {
     "style": "dialogue",
-    "speaker": "玉华公主",
-    "text": "“你这还怕什么，都能当男皇后，还怕伦理纲常！”"
+    "text": "“你这还怕什么，都能当男皇后，还怕伦理纲常！”",
+    "speed": 1,
+    "speaker": "玉华公主"
   },
   "third_act_intro:6": {
-    "style": "narration"
+    "style": "narration",
+    "text": "“若你不从，我就自缢，告诉圣上你调戏我！”你知从她是欺君，不从又恐祸起。",
+    "speed": 1
+  },
+  "princess_accept:0": {
+    "style": "narration",
+    "text": "玉华公主大喜，拿最爱的白团扇题诗赠你，写你如明月般清澈。",
+    "speed": 1
   },
   "princess_accept:1": {
-    "style": "narration"
+    "style": "narration",
+    "text": "一旁丫鬟多看了一眼，公主便大骂“这贱人在瞧什么”。",
+    "speed": 1
+  },
+  "princess_accept:2": {
+    "style": "narration",
+    "text": "你不愿闹大，只得安抚公主，让丫鬟退下。",
+    "speed": 1
+  },
+  "princess_accept:3": {
+    "style": "narration",
+    "text": "这柄团扇，终成祸根。",
+    "speed": 1
   },
   "fourth_act:0": {
     "style": "dialogue",
-    "speaker": "丫鬟",
-    "text": "“奴婢句句属实！这白团扇便是铁证！”"
+    "text": "“奴婢句句属实！这白团扇便是铁证！”",
+    "speed": 1,
+    "speaker": "丫鬟"
+  },
+  "fourth_act:1": {
+    "style": "narration",
+    "text": "你不敢抬头，却感到大殿阴沉沉，冰凉地板寒意透骨。",
+    "speed": 1
   },
   "fourth_act:2": {
     "style": "dialogue",
-    "speaker": "大王",
-    "text": "“好一出‘出入怀袖百千年’！寡人破例立你这不男不女者为皇后，你竟行这苟且之事？！”"
+    "text": "“好一出‘出入怀袖百千年’！寡人破例立你这不男不女者为皇后，你竟行这苟且之事？！”",
+    "speed": 1,
+    "speaker": "大王"
+  },
+  "fourth_act:3": {
+    "style": "narration",
+    "text": "你跪在冰冷砖瓦上，骨髓都发寒。此刻只能辩白或认罪。",
+    "speed": 1
+  },
+  "ending_1:0": {
+    "style": "narration",
+    "text": "脚步在最后一刻停住。你顺势低头，侧身一闪，隐入嘈杂欢呼之中。",
+    "speed": 1
+  },
+  "ending_1:1": {
+    "style": "narration",
+    "text": "将军高坐马背，受万众瞩目。功绩与喧嚣近在咫尺，却与你隔着一层看不见的幕。",
+    "speed": 1
+  },
+  "ending_1:2": {
+    "style": "narration",
+    "text": "你再也无法触及那条命运岔道，终成芸芸众生。",
+    "speed": 1
+  },
+  "ending_2:0": {
+    "style": "narration",
+    "text": "大王冷哼几声，摆了摆手。",
+    "speed": 1
+  },
+  "ending_2:1": {
+    "style": "narration",
+    "text": "几个侍卫上前把你拖走，帐内灯火与兵械很快被黑暗吞没。",
+    "speed": 1
+  },
+  "ending_2:2": {
+    "style": "narration",
+    "text": "你没能进入宫廷中心，故事在门外戛然而止。",
+    "speed": 1
+  },
+  "ending_3:0": {
+    "style": "narration",
+    "text": "你叩拜大王，久久不起，再提愿为大王出谋划策。",
+    "speed": 1
+  },
+  "ending_3:1": {
+    "style": "narration",
+    "text": "大王冷笑。他不忍杀你，却废你后位。",
+    "speed": 1
+  },
+  "ending_3:2": {
+    "style": "narration",
+    "text": "不久你彻底失宠，落得冷冷清清。",
+    "speed": 1
+  },
+  "ending_4:0": {
+    "style": "narration",
+    "text": "玉华公主大怒，连日登殿痛诉你调戏。",
+    "speed": 1
+  },
+  "ending_4:1": {
+    "style": "narration",
+    "text": "原本对你深信不疑的大王终起疑心。",
+    "speed": 1
+  },
+  "ending_4:2": {
+    "style": "narration",
+    "text": "你失去恩宠，只剩一个无实权的皇后名号。",
+    "speed": 1
+  },
+  "ending_5:0": {
+    "style": "narration",
+    "text": "内侍上前剥去你身上华贵宫衫，摘下金翠花簪，将你丢入冷宫。",
+    "speed": 1
+  },
+  "ending_5:1": {
+    "style": "narration",
+    "text": "冷宫寒夜刺骨。没有银烛锦瑟，只有破窗漏进的惨白月光与秋虫哀鸣。",
+    "speed": 1
+  },
+  "ending_5:2": {
+    "style": "narration",
+    "text": "后来你听闻玉华公主不过禁足数月便获宽宥，仍是金尊玉贵。",
+    "speed": 1
+  },
+  "ending_5:3": {
+    "style": "narration",
+    "text": "为了彻底洗刷这段流言，大王为她精挑细选了一位门当户对的世家公子做驸马。",
+    "speed": 1
+  },
+  "ending_5:4": {
+    "style": "narration",
+    "text": "十里红妆出降那天，喜乐声甚至隐隐传到了冷宫的红墙内。",
+    "speed": 1
+  },
+  "ending_5:5": {
+    "style": "narration",
+    "text": "公主依然是金尊玉贵的公主，大王依然是高高在上的大王。而你呢？",
+    "speed": 1
   },
   "ending_5:6": {
-    "style": "narration"
+    "style": "narration",
+    "text": "你低头看着井水中渐渐枯槁的倒影，终于苦笑着明白：戏台塌了，只有你这个被强行拉上台的戏子，要用一生来陪葬。",
+    "speed": 1
   },
   "ending_5:7": {
-    "style": "narration"
+    "style": "narration",
+    "text": "你终于明白：“生男倒坐中宫驾”的泼天富贵，不过是权力者一时兴起的荒唐游戏。",
+    "speed": 1
   },
   "ending_6:0": {
     "style": "dialogue",
-    "speaker": "大王",
-    "text": "“罢了，若赐死你们，寡人心头最爱也生生夺去了。”"
+    "text": "“罢了，若赐死你们，寡人心头最爱也生生夺去了。”",
+    "speed": 1,
+    "speaker": "大王"
+  },
+  "ending_6:1": {
+    "style": "narration",
+    "text": "那一刻你已泪流满面，你也不知道是侥幸，是愧疚，还是对这段善缘的叹惋。",
+    "speed": 1
+  },
+  "ending_6:2": {
+    "style": "narration",
+    "text": "后来大王赐婚，许你做玉华公主驸马。满城称颂十里红妆，却见你仍着娘娘装束。",
+    "speed": 1
+  },
+  "ending_6:3": {
+    "style": "narration",
+    "text": "你感觉这一幕好熟悉。当时大王十里红妆娶你时，也是这般。",
+    "speed": 1
+  },
+  "ending_6:4": {
+    "style": "narration",
+    "text": "也许大王要你身着娘娘衣裳，也是在惩罚当初的欺君之罪。",
+    "speed": 1
+  },
+  "ending_6:5": {
+    "style": "narration",
+    "text": "都说玉华公主非比寻常，寻得如意郎君；却无人问这郎君为何仍着宫里娘娘衣裳。",
+    "speed": 1
+  },
+  "ending_6:6": {
+    "style": "narration",
+    "text": "泪水滑过脸颊。你明白自己从头到尾都只是任人摆布。",
+    "speed": 1
   },
   "ending_6:7": {
-    "style": "narration"
+    "style": "narration",
+    "text": "后史观记载里，你被写作“男生女相，惑主乱位”的反面注脚。",
+    "speed": 1
   }
 }

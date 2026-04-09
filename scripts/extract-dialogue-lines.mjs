@@ -1,6 +1,8 @@
-import { story } from '../data/story.js';
+import { readFileSync } from 'node:fs';
 
 const candidates = [];
+const pack = JSON.parse(readFileSync(new URL('../data/shenlong-pack.json', import.meta.url), 'utf8'));
+const story = Array.isArray(pack.nodes) ? pack.nodes : [];
 
 for (const node of story) {
   const lines = Array.isArray(node.lines) ? node.lines : [];

@@ -43,22 +43,48 @@ const readJsonResponse = async (response, label) => {
   return response.json();
 };
 
-const collectCandidates = (nodes) => {
+const collectEditableRows = (nodes) => {
   const result = [];
   (nodes || []).forEach((node) => {
     (node.lines || []).forEach((line, index) => {
-      if (typeof line !== 'string') return;
-      const text = line.trim();
-      if (!text) return;
-      if (/[“”]/.test(text) || /[:：]/.test(text)) {
+      const key = `${node.id}:${index}`;
+      if (typeof line === 'string') {
+        const source = line.trim();
+        if (!source) return;
+        let style = 'narration';
+        if (/^【.+】$/.test(source) || /^「.+」$/.test(source)) style = 'verse';
+        else if (/^\[.+\]/.test(source)) style = 'note';
+
         result.push({
-          key: `${node.id}:${index}`,
+          key,
           nodeId: node.id,
           nodeTitle: node.title,
           index,
-          source: text
+          source,
+          defaultStyle: style,
+          defaultText: line,
+          defaultSpeaker: '',
+          defaultSpeed: style === 'verse' ? 1.2 : style === 'note' ? 1.1 : 1,
+          defaultPortrait: ''
         });
+        return;
       }
+
+      if (!line || typeof line !== 'object') return;
+      const source = (line.text || '').trim();
+      if (!source) return;
+      result.push({
+        key,
+        nodeId: node.id,
+        nodeTitle: node.title,
+        index,
+        source,
+        defaultStyle: line.style || 'narration',
+        defaultText: line.text || '',
+        defaultSpeaker: line.speaker || '',
+        defaultSpeed: typeof line.speed === 'number' ? line.speed : 1,
+        defaultPortrait: line.portrait || ''
+      });
     });
   });
   return result;
@@ -108,12 +134,12 @@ const buildRows = ({ candidates, cues, draft }) => {
     const fromDraft = draftRows[item.key] || null;
     return {
       ...item,
-      enabled: fromDraft ? Boolean(fromDraft.enabled) : Boolean(cues[item.key]),
-      style: fromDraft?.style ?? cue.style ?? 'narration',
-      speaker: fromDraft?.speaker ?? cue.speaker ?? '',
-      text: fromDraft?.text ?? cue.text ?? '',
-      speed: fromDraft?.speed ?? cue.speed ?? '',
-      portrait: fromDraft?.portrait ?? cue.portrait ?? ''
+      enabled: fromDraft ? Boolean(fromDraft.enabled) : true,
+      style: fromDraft?.style ?? cue.style ?? item.defaultStyle,
+      speaker: fromDraft?.speaker ?? cue.speaker ?? item.defaultSpeaker,
+      text: fromDraft?.text ?? cue.text ?? item.defaultText,
+      speed: fromDraft?.speed ?? cue.speed ?? item.defaultSpeed,
+      portrait: fromDraft?.portrait ?? cue.portrait ?? item.defaultPortrait
     };
   });
 };
@@ -234,7 +260,7 @@ const loadFromServer = async () => {
   const [packRes, cueRes] = await Promise.all([fetch('/api/story'), fetch('/api/manual-cues')]);
   const pack = await readJsonResponse(packRes, '加载故事');
   const cues = await readJsonResponse(cueRes, '加载配置');
-  const candidates = collectCandidates(pack.nodes);
+  const candidates = collectEditableRows(pack.nodes);
   const draft = getDraft();
 
   state.serverCues = cues;
@@ -244,7 +270,7 @@ const loadFromServer = async () => {
   if (draft) {
     setStatus(`已载入本地草稿（${draft.updatedAt || '未知时间'}）`);
   } else {
-    setStatus(`已载入服务器配置，共 ${state.rows.length} 条候选台词`);
+    setStatus(`已载入服务器配置，共 ${state.rows.length} 条文本行`);
   }
 };
 
