@@ -78,7 +78,9 @@ const buildConicGradient = (items) => {
 const createOrbitalNodes = (items) => {
   return items
     .map((item, index) => {
-      const angle = -90 + (360 / items.length) * index;
+      // Dynamic placement: derive each node from its stat bar midpoint.
+      const mid = typeof item.barMid === 'number' ? item.barMid : 50;
+      const angle = -180 + mid * 3.6 + (index - 2) * 6;
       const rad = (angle * Math.PI) / 180;
       const x = 50 + Math.cos(rad) * 37;
       const y = 50 + Math.sin(rad) * 37;
@@ -188,16 +190,22 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
         key,
         label: meta.label || snapshot.stats[key] || key,
         color: meta.color || '#e1b16a',
-        value: snapshot.state[key] ?? 0
+        value: snapshot.state[key] ?? 0,
+        barWidth: 0,
+        barMid: 0
       };
     });
 
     const maxValue = Math.max(12, ...items.map((item) => item.value));
     const ringGradient = buildConicGradient(items);
 
+    items.forEach((item) => {
+      item.barWidth = Math.min(100, Math.max(0, (item.value / maxValue) * 100));
+      item.barMid = item.barWidth / 2;
+    });
+
     const rows = items
       .map((item) => {
-        const width = Math.min(100, Math.max(0, (item.value / maxValue) * 100));
         return `
           <div class="rounded-lg border border-stage-accent/10 bg-black/20 px-3 py-2">
             <div class="mb-1 flex items-center justify-between text-[13px]">
@@ -205,7 +213,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
               <span class="font-semibold" style="color:${item.color};">${item.value}</span>
             </div>
             <div class="h-1.5 overflow-hidden rounded-full bg-black/40">
-              <div class="h-full rounded-full" style="width:${width}%;background:linear-gradient(90deg, ${item.color}, ${item.color}88);"></div>
+              <div class="h-full rounded-full" style="width:${item.barWidth}%;background:linear-gradient(90deg, ${item.color}, ${item.color}88);"></div>
             </div>
           </div>
         `;
