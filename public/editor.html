@@ -4,20 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>台词配置编辑器</title>
-    <link rel="stylesheet" href="/editor.css" />
+    <link rel="stylesheet" href="./editor.css" />
   </head>
   <body>
     <main class="editor-root">
       <header class="toolbar">
         <div>
           <h1>台词配置编辑器</h1>
-          <p>自动保存到本地草稿，可一键保存到服务器配置文件。</p>
+          <p>自动保存到本地草稿。可导入 JSON，编辑后下载 JSON。</p>
         </div>
         <div class="toolbar-actions">
-          <button id="save-server-btn" class="btn btn-primary">保存到服务器</button>
-          <button id="reload-btn" class="btn">从服务器重载</button>
+          <button id="upload-pack-btn" class="btn">导入剧情JSON</button>
+          <button id="upload-cues-btn" class="btn">导入配置JSON</button>
+          <button id="download-cues-btn" class="btn btn-primary">下载配置JSON</button>
           <button id="clear-draft-btn" class="btn">清空本地草稿</button>
-          <a href="/" class="btn">返回游戏</a>
+          <a href="./index.html" class="btn">返回游戏</a>
         </div>
       </header>
 
@@ -26,8 +27,11 @@
       </section>
 
       <section id="rows" class="rows"></section>
+
+      <input id="upload-pack-input" type="file" accept="application/json,.json" hidden />
+      <input id="upload-cues-input" type="file" accept="application/json,.json" hidden />
     </main>
 
-    <script type="module" src="/editor.js"></script>
+    <script type="module" src="./editor.js"></script>
   </body>
 </html>

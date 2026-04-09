@@ -282,7 +282,7 @@ const resolveCuePortrait = (cue, state) => {
     const feminine = Number(state?.feminine || 0);
     return {
       ...cue,
-      portrait: feminine >= 5 ? '/portraits/当皇后后.png' : '/portraits/陈子高当皇后前.png'
+      portrait: feminine >= 5 ? 'portraits/当皇后后.png' : 'portraits/陈子高当皇后前.png'
     };
   }
   return cue;

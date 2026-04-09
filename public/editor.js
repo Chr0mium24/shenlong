@@ -1,14 +1,20 @@
 const STORAGE_KEY = 'shenlong_manual_cues_draft_v1';
+const DEFAULT_PACK_URL = 'data/shenlong-pack.json';
+const DEFAULT_CUES_URL = 'data/manual-line-cues.json';
 
 const rowsEl = document.getElementById('rows');
 const statusEl = document.getElementById('status-text');
-const saveServerBtn = document.getElementById('save-server-btn');
-const reloadBtn = document.getElementById('reload-btn');
+const uploadPackBtn = document.getElementById('upload-pack-btn');
+const uploadCuesBtn = document.getElementById('upload-cues-btn');
+const downloadCuesBtn = document.getElementById('download-cues-btn');
 const clearDraftBtn = document.getElementById('clear-draft-btn');
+const uploadPackInput = document.getElementById('upload-pack-input');
+const uploadCuesInput = document.getElementById('upload-cues-input');
 
 const state = {
   rows: [],
-  serverCues: {}
+  pack: null,
+  cues: {}
 };
 
 let saveTimer = null;
@@ -25,22 +31,34 @@ const setStatus = (text) => {
   statusEl.textContent = text;
 };
 
-const readJsonResponse = async (response, label) => {
+const parseJsonText = (text, label) => {
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    throw new Error(`${label}不是合法 JSON：${error.message}`);
+  }
+};
+
+const fetchJson = async (url, label) => {
+  const response = await fetch(url);
   const contentType = response.headers.get('content-type') || '';
+
   if (!response.ok) {
-    let detail = '';
-    try {
-      detail = await response.text();
-    } catch {
-      detail = '';
-    }
+    const detail = await response.text().catch(() => '');
     throw new Error(`${label}失败（${response.status}）${detail ? `: ${detail.slice(0, 120)}` : ''}`);
   }
+
   if (!contentType.includes('application/json')) {
     const body = await response.text();
     throw new Error(`${label}返回非 JSON（content-type=${contentType || 'unknown'}）: ${body.slice(0, 120)}`);
   }
+
   return response.json();
+};
+
+const readFileAsJson = async (file, label) => {
+  const text = await file.text();
+  return parseJsonText(text, label);
 };
 
 const collectEditableRows = (nodes) => {
@@ -224,6 +242,43 @@ const toPayload = () => {
   return payload;
 };
 
+const downloadJson = (filename, data) => {
+  const blob = new Blob([`${JSON.stringify(data, null, 2)}\n`], { type: 'application/json;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+};
+
+const rebuildRows = ({ pack, cues, useDraft = false, sourceLabel }) => {
+  if (!pack || !Array.isArray(pack.nodes)) {
+    throw new Error('剧情 JSON 缺少 nodes 数组');
+  }
+  const draft = useDraft ? getDraft() : null;
+  const candidates = collectEditableRows(pack.nodes);
+
+  state.pack = pack;
+  state.cues = cues && typeof cues === 'object' ? cues : {};
+  state.rows = buildRows({
+    candidates,
+    cues: state.cues,
+    draft
+  });
+
+  render();
+
+  if (draft && useDraft) {
+    setStatus(`已载入${sourceLabel}，并应用本地草稿（${draft.updatedAt || '未知时间'}）。共 ${state.rows.length} 条`);
+    return;
+  }
+
+  setStatus(`已载入${sourceLabel}，共 ${state.rows.length} 条文本行`);
+};
+
 const applyInteractiveUpdate = (target) => {
   const rowEl = target.closest('[data-key]');
   if (!rowEl) return;
@@ -256,54 +311,66 @@ const applyInteractiveUpdate = (target) => {
   scheduleDraftSave();
 };
 
-const loadFromServer = async () => {
-  const [packRes, cueRes] = await Promise.all([fetch('/api/story'), fetch('/api/manual-cues')]);
-  const pack = await readJsonResponse(packRes, '加载故事');
-  const cues = await readJsonResponse(cueRes, '加载配置');
-  const candidates = collectEditableRows(pack.nodes);
-  const draft = getDraft();
-
-  state.serverCues = cues;
-  state.rows = buildRows({ candidates, cues, draft });
-  render();
-
-  if (draft) {
-    setStatus(`已载入本地草稿（${draft.updatedAt || '未知时间'}）`);
-  } else {
-    setStatus(`已载入服务器配置，共 ${state.rows.length} 条文本行`);
-  }
-};
-
-const saveToServer = async () => {
-  const payload = toPayload();
-  const res = await fetch('/api/manual-cues', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-  const result = await readJsonResponse(res, '保存配置');
-  setStatus(`服务器保存成功，共 ${result.count} 条。`);
+const loadStaticSources = async () => {
+  const [pack, cues] = await Promise.all([
+    fetchJson(DEFAULT_PACK_URL, '加载剧情'),
+    fetchJson(DEFAULT_CUES_URL, '加载配置')
+  ]);
+  rebuildRows({ pack, cues, useDraft: true, sourceLabel: '静态文件' });
 };
 
 rowsEl.addEventListener('input', (event) => applyInteractiveUpdate(event.target));
 rowsEl.addEventListener('change', (event) => applyInteractiveUpdate(event.target));
 
-saveServerBtn.addEventListener('click', async () => {
+uploadPackBtn.addEventListener('click', () => {
+  uploadPackInput.value = '';
+  uploadPackInput.click();
+});
+
+uploadCuesBtn.addEventListener('click', () => {
+  uploadCuesInput.value = '';
+  uploadCuesInput.click();
+});
+
+uploadPackInput.addEventListener('change', async () => {
+  const file = uploadPackInput.files?.[0];
+  if (!file) return;
+
   try {
-    setStatus('正在保存到服务器...');
-    await saveToServer();
+    setStatus('正在导入剧情 JSON...');
+    const pack = await readFileAsJson(file, '剧情 JSON');
+    const cues = toPayload();
+    localStorage.removeItem(STORAGE_KEY);
+    rebuildRows({ pack, cues, useDraft: false, sourceLabel: `导入剧情 ${file.name}` });
   } catch (error) {
-    setStatus(`保存失败：${error.message}`);
+    setStatus(`导入失败：${error.message}`);
   }
 });
 
-reloadBtn.addEventListener('click', async () => {
+uploadCuesInput.addEventListener('change', async () => {
+  const file = uploadCuesInput.files?.[0];
+  if (!file) return;
+
   try {
-    setStatus('正在从服务器重载...');
+    setStatus('正在导入配置 JSON...');
+    const cues = await readFileAsJson(file, '配置 JSON');
+    if (!state.pack) {
+      throw new Error('请先加载剧情 JSON');
+    }
     localStorage.removeItem(STORAGE_KEY);
-    await loadFromServer();
+    rebuildRows({ pack: state.pack, cues, useDraft: false, sourceLabel: `导入配置 ${file.name}` });
   } catch (error) {
-    setStatus(`重载失败：${error.message}`);
+    setStatus(`导入失败：${error.message}`);
+  }
+});
+
+downloadCuesBtn.addEventListener('click', () => {
+  try {
+    const payload = toPayload();
+    downloadJson('manual-line-cues.json', payload);
+    setStatus(`已下载配置 JSON，共 ${Object.keys(payload).length} 条。`);
+  } catch (error) {
+    setStatus(`下载失败：${error.message}`);
   }
 });
 
@@ -316,6 +383,6 @@ window.addEventListener('beforeunload', () => {
   saveDraftNow();
 });
 
-loadFromServer().catch((error) => {
+loadStaticSources().catch((error) => {
   setStatus(`初始化失败：${error.message}`);
 });

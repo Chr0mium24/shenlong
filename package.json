@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch server.js",
     "start": "node server.js",
-    "extract:dialogue": "node scripts/extract-dialogue-lines.mjs"
+    "extract:dialogue": "node scripts/extract-dialogue-lines.mjs",
+    "build:pages": "node scripts/prepare-pages.mjs"
   },
   "dependencies": {
     "express": "^4.21.2"
