@@ -307,32 +307,40 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
         key,
         label: meta.label || snapshot.stats[key] || key,
         color: meta.color || '#e1b16a',
-        value: snapshot.state[key] ?? 0,
-        barWidth: 0,
-        barMid: 0
+        value: snapshot.state[key] ?? 0
       };
     });
 
-    const maxValue = Math.max(12, ...items.map((item) => item.value));
     const ringGradient = buildConicGradient(items);
-
-    items.forEach((item) => {
-      item.barWidth = Math.min(100, Math.max(0, (item.value / maxValue) * 100));
-      item.barMid = item.barWidth / 2;
-    });
-
-    const rows = items
+    const ranking = [...items].sort((a, b) => b.value - a.value);
+    const dominant = ranking[0];
+    const support = ranking[1];
+    const omenText =
+      dominant.value >= 15
+        ? `今夜由${dominant.label}执灯领路。`
+        : dominant.value >= 8
+          ? `${dominant.label}渐盛，宫闱风声已偏。`
+          : '诸曜尚浅，局势仍可翻覆。';
+    const historyRows = snapshot.history.slice(-3).reverse();
+    const historyHtml = historyRows.length
+      ? historyRows
+          .map((entry) => {
+            return `
+              <li class="mingpan-history-item">
+                <span class="mingpan-history-act">${escapeHtml(entry.nodeTitle)}</span>
+                <span class="mingpan-history-choice">${escapeHtml(stripNumericEffectText(entry.choiceText || ''))}</span>
+              </li>
+            `;
+          })
+          .join('')
+      : '<li class="mingpan-history-empty">尚未落子</li>';
+    const beadHtml = items
       .map((item) => {
         return `
-          <div class="rounded-lg border border-stage-accent/10 bg-black/20 px-3 py-2">
-            <div class="mb-1 flex items-center justify-between text-[13px]">
-              <span class="text-stage-ink/90">${escapeHtml(item.label)}</span>
-              <span class="font-semibold" style="color:${item.color};">${item.value}</span>
-            </div>
-            <div class="h-1.5 overflow-hidden rounded-full bg-black/40">
-              <div class="h-full rounded-full" style="width:${item.barWidth}%;background:linear-gradient(90deg, ${item.color}, ${item.color}88);"></div>
-            </div>
-          </div>
+          <span class="mingpan-bead" style="--bead:${item.color};">
+            <span class="mingpan-bead-label">${escapeHtml(item.label)}</span>
+            <span class="mingpan-bead-value">${item.value}</span>
+          </span>
         `;
       })
       .join('');
@@ -353,7 +361,17 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
           </div>
           ${createOrbitalNodes(items)}
         </div>
-        <div>${rows}</div>
+        <div class="mingpan-brief">
+          <p class="mingpan-brief-title">命理笺</p>
+          <p class="mingpan-brief-text">主曜：<span style="color:${dominant.color};">${escapeHtml(dominant.label)} ${dominant.value}</span></p>
+          <p class="mingpan-brief-text">副曜：<span style="color:${support.color};">${escapeHtml(support.label)} ${support.value}</span></p>
+          <p class="mingpan-brief-omen">${escapeHtml(omenText)}</p>
+          <div class="mingpan-bead-wrap">${beadHtml}</div>
+        </div>
+        <div class="mingpan-history">
+          <p class="mingpan-history-title">近三步</p>
+          <ol class="mingpan-history-list">${historyHtml}</ol>
+        </div>
       </div>
     `;
   };
