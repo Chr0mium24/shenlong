@@ -294,8 +294,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
     if (!target) return;
     const choiceBlock = gameView.querySelector('[data-choices]');
     if (choiceBlock) {
-      choiceBlock.classList.add('opacity-0', 'pointer-events-none');
-      choiceBlock.classList.remove('opacity-100');
+      choiceBlock.classList.add('hidden', 'pointer-events-none');
     }
     onChoose(target.dataset.choiceId);
   });
@@ -476,7 +475,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
             <div data-line-host class="story-line-host no-scrollbar h-full min-h-0 overflow-y-auto pr-1"></div>
             <div data-portrait-host class="portrait-host min-h-0"></div>
           </div>
-          <div data-choices class="grid min-h-[156px] shrink-0 gap-2 pt-2 opacity-0 pointer-events-none transition duration-300"></div>
+          <div data-choices class="grid min-h-[156px] shrink-0 gap-2 pt-2 hidden pointer-events-none"></div>
         </article>
       `;
       activeAct = node.act;
@@ -491,14 +490,12 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
     const choices = snapshot.choices.map((choice) => createChoiceButton(choice, statTheme)).join('');
     if (choiceBlock) {
       choiceBlock.innerHTML = choices;
-      choiceBlock.classList.add('opacity-0', 'pointer-events-none');
-      choiceBlock.classList.remove('opacity-100');
+      choiceBlock.classList.add('hidden', 'pointer-events-none');
     }
 
     const showChoices = () => {
       if (!choiceBlock) return;
-      choiceBlock.classList.remove('opacity-0', 'pointer-events-none');
-      choiceBlock.classList.add('opacity-100');
+      choiceBlock.classList.remove('hidden', 'pointer-events-none');
     };
 
     playCues(snapshot, showChoices);
