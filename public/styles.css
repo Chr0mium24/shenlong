@@ -236,30 +236,30 @@ body.ending-cinematic-mode > main > section > aside {
   border: 1px solid rgba(225, 177, 106, 0.2);
   border-radius: 12px;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.24), rgba(225, 177, 106, 0.03));
-  padding: 10px 12px;
+  padding: 8px 10px;
 }
 .mingpan-brief-title,
 .mingpan-history-title {
-  margin: 0 0 6px;
-  font-size: 12px;
+  margin: 0 0 5px;
+  font-size: 11px;
   letter-spacing: 0.18em;
   color: rgba(225, 177, 106, 0.92);
 }
 .mingpan-brief-text {
   margin: 0;
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(244, 232, 211, 0.9);
 }
 .mingpan-brief-omen {
-  margin: 8px 0 0;
-  font-size: 13px;
+  margin: 6px 0 0;
+  font-size: 12px;
   color: rgba(244, 232, 211, 0.76);
 }
 .mingpan-bead-wrap {
-  margin-top: 10px;
+  margin-top: 8px;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
 }
 .mingpan-bead {
   display: inline-flex;
@@ -268,8 +268,8 @@ body.ending-cinematic-mode > main > section > aside {
   border: 1px solid color-mix(in oklab, var(--bead), transparent 48%);
   background: color-mix(in oklab, var(--bead), transparent 88%);
   border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 12px;
+  padding: 1px 7px;
+  font-size: 11px;
 }
 .mingpan-bead-label {
   color: rgba(244, 232, 211, 0.84);
@@ -283,24 +283,27 @@ body.ending-cinematic-mode > main > section > aside {
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 7px;
+  gap: 5px;
 }
 .mingpan-history-item {
   display: grid;
-  gap: 2px;
+  gap: 1px;
 }
 .mingpan-history-act {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(225, 177, 106, 0.88);
 }
 .mingpan-history-choice {
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(244, 232, 211, 0.82);
-  line-height: 1.45;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .mingpan-history-empty {
   margin: 0;
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(244, 232, 211, 0.6);
 }
 @keyframes riseIn {

@@ -321,7 +321,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
         : dominant.value >= 8
           ? `${dominant.label}渐盛，宫闱风声已偏。`
           : '诸曜尚浅，局势仍可翻覆。';
-    const historyRows = snapshot.history.slice(-3).reverse();
+    const historyRows = snapshot.history.slice(-2).reverse();
     const historyHtml = historyRows.length
       ? historyRows
           .map((entry) => {
@@ -346,8 +346,8 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
       .join('');
 
     statsList.innerHTML = `
-      <div class="space-y-4">
-        <div class="relative mx-auto h-64 w-64">
+      <div class="space-y-3">
+        <div class="relative mx-auto h-56 w-56">
           <div class="mingpan-rotor absolute inset-2 rounded-full opacity-45 blur-xl" style="background:conic-gradient(${ringGradient});"></div>
           <div class="absolute inset-4 rounded-full border border-stage-accent/20 bg-black/45"></div>
           <div class="absolute inset-7 rounded-full border border-stage-accent/15" style="background:conic-gradient(${ringGradient});opacity:0.7;"></div>
@@ -369,7 +369,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
           <div class="mingpan-bead-wrap">${beadHtml}</div>
         </div>
         <div class="mingpan-history">
-          <p class="mingpan-history-title">近三步</p>
+          <p class="mingpan-history-title">近二步</p>
           <ol class="mingpan-history-list">${historyHtml}</ol>
         </div>
       </div>
@@ -465,18 +465,18 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
     if (shouldRebuildScene) {
       gameView.innerHTML = `
-        <article class="enter-fade flex min-h-full flex-col gap-4">
+        <article class="enter-fade flex h-full min-h-0 flex-col gap-4 overflow-hidden">
           <div class="flex flex-wrap items-end justify-between gap-2 border-b border-stage-accent/20 pb-3">
             <div>
               <p data-act-label class="text-xs uppercase tracking-[0.25em] text-stage-accent/80">${escapeHtml(node.act)}</p>
               <h2 data-node-title class="text-xl font-semibold text-stage-ink">${escapeHtml(node.title)}</h2>
             </div>
           </div>
-          <div class="story-stage-panel grid min-h-0 flex-1 gap-3 p-1 lg:grid-cols-[1fr_190px]">
-            <div data-line-host class="story-line-host h-full min-h-0 overflow-y-auto pr-1"></div>
-            <div data-portrait-host class="portrait-host min-h-[120px]"></div>
+          <div class="story-stage-panel grid min-h-0 flex-1 gap-3 overflow-hidden p-1 lg:grid-cols-[1fr_190px]">
+            <div data-line-host class="story-line-host no-scrollbar h-full min-h-0 overflow-y-auto pr-1"></div>
+            <div data-portrait-host class="portrait-host min-h-0"></div>
           </div>
-          <div data-choices class="grid gap-2 pt-2 opacity-0 pointer-events-none transition duration-300"></div>
+          <div data-choices class="grid min-h-[156px] shrink-0 gap-2 pt-2 opacity-0 pointer-events-none transition duration-300"></div>
         </article>
       `;
       activeAct = node.act;
