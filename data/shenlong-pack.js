@@ -52,7 +52,7 @@ export const shenlongPack = {
       {
         id: 'general',
         name: '将军',
-        aliases: [],
+        aliases: ['另一小兵', '又有人', '周围兵卒', '小兵', '兵卒'],
         portrait: '/portraits/general.svg'
       }
     ]

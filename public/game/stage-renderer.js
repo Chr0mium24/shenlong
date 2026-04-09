@@ -143,13 +143,20 @@ const cueClassByStyle = {
   note: 'story-line--note'
 };
 
+const removeSpeakerPrefix = (text, speaker) => {
+  if (!speaker || !text) return text;
+  const escaped = speaker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`^${escaped}\\s*[：:]\\s*`), '');
+};
+
 const createCueHtml = (cue) => {
   const styleClass = cueClassByStyle[cue.style] || cueClassByStyle.narration;
   const speaker = cue.speaker ? `<p class="story-line-speaker">${escapeHtml(cue.speaker)}</p>` : '';
+  const text = removeSpeakerPrefix(cue.text, cue.speaker);
   return `
     <div class="story-line ${styleClass}">
       ${speaker}
-      <p class="story-line-text">${escapeHtml(cue.text)}</p>
+      <p class="story-line-text">${escapeHtml(text)}</p>
     </div>
   `;
 };
@@ -170,7 +177,7 @@ const createPortraitHtml = (cue) => {
 
   return `
     <div class="portrait-shell portrait-shell--active portrait-shell--fallback">
-      <div class="portrait-fallback">${escapeHtml(cue.speaker || '角色')}</div>
+      <div class="portrait-fallback">立绘待补</div>
       <p class="portrait-name">${escapeHtml(cue.speaker || '角色')}</p>
     </div>
   `;
@@ -392,8 +399,8 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
             <h2 class="text-xl font-semibold text-stage-ink">${escapeHtml(node.title)}</h2>
           </div>
         </div>
-        <div class="story-stage-panel grid gap-3 rounded-xl border border-stage-accent/15 bg-black/20 p-3 lg:grid-cols-[1fr_220px]">
-          <div data-line-host class="story-line-host min-h-[120px] max-h-[56vh] overflow-y-auto pr-1 space-y-2"></div>
+        <div class="story-stage-panel grid gap-3 rounded-xl border border-stage-accent/15 bg-black/20 p-3 lg:grid-cols-[1fr_190px]">
+          <div data-line-host class="story-line-host min-h-[120px] max-h-[56vh] overflow-y-auto pr-1"></div>
           <div data-portrait-host class="portrait-host min-h-[120px]"></div>
         </div>
         <div data-choices class="grid gap-2 pt-2 opacity-0 pointer-events-none transition duration-300">${choices}</div>

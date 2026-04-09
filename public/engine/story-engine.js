@@ -1,6 +1,22 @@
 const clone = (value) => structuredClone(value);
 const ENDING_TRANSITION_NEXT = '__resume_pending_ending__';
-const DIALOGUE_VERBS = ['问', '答', '怒道', '笑骂', '说道', '高喊', '叹', '道', '夸', '冷笑', '点点头', '长叹'];
+const DIALOGUE_VERBS = [
+  '问',
+  '答',
+  '怒道',
+  '笑骂',
+  '说道',
+  '高喊',
+  '叹',
+  '道',
+  '夸',
+  '冷笑',
+  '点点头',
+  '长叹',
+  '哄笑',
+  '起哄',
+  '接话'
+];
 
 export class StoryEngine {
   #pack;
@@ -238,6 +254,7 @@ export class StoryEngine {
     if (direct) {
       cue.style = 'dialogue';
       cue.speaker = direct[1].trim();
+      cue.text = direct[2].trim();
       cue.speed = 1.3;
       cue.portrait = this.#resolvePortrait(cue.speaker, cast);
       return cue;
@@ -248,6 +265,8 @@ export class StoryEngine {
     if (verbMatch && /“.+”/.test(text)) {
       cue.style = 'dialogue';
       cue.speaker = verbMatch[1].trim();
+      const quote = text.match(/“([^”]+)”/);
+      cue.text = quote ? `“${quote[1]}”` : text;
       cue.speed = 1.25;
       cue.portrait = this.#resolvePortrait(cue.speaker, cast);
       return cue;
