@@ -465,15 +465,15 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
     if (shouldRebuildScene) {
       gameView.innerHTML = `
-        <article class="enter-fade space-y-4">
+        <article class="enter-fade flex min-h-full flex-col gap-4">
           <div class="flex flex-wrap items-end justify-between gap-2 border-b border-stage-accent/20 pb-3">
             <div>
               <p data-act-label class="text-xs uppercase tracking-[0.25em] text-stage-accent/80">${escapeHtml(node.act)}</p>
               <h2 data-node-title class="text-xl font-semibold text-stage-ink">${escapeHtml(node.title)}</h2>
             </div>
           </div>
-          <div class="story-stage-panel grid gap-3 p-1 lg:grid-cols-[1fr_190px]">
-            <div data-line-host class="story-line-host min-h-[120px] max-h-[56vh] overflow-y-auto pr-1"></div>
+          <div class="story-stage-panel grid min-h-0 flex-1 gap-3 p-1 lg:grid-cols-[1fr_190px]">
+            <div data-line-host class="story-line-host h-full min-h-0 overflow-y-auto pr-1"></div>
             <div data-portrait-host class="portrait-host min-h-[120px]"></div>
           </div>
           <div data-choices class="grid gap-2 pt-2 opacity-0 pointer-events-none transition duration-300"></div>

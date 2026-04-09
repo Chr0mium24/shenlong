@@ -47,7 +47,7 @@
       </header>
 
       <section class="grid min-h-0 flex-1 gap-4 overflow-hidden lg:grid-cols-[280px_1fr]">
-        <aside class="no-scrollbar min-h-0 overflow-y-auto rounded-2xl border border-stage-accent/25 bg-stage-panel/80 p-4 shadow-ember backdrop-blur">
+        <aside class="no-scrollbar min-h-0 overflow-x-hidden overflow-y-auto rounded-2xl border border-stage-accent/25 bg-stage-panel/80 p-4 shadow-ember backdrop-blur">
           <p class="mb-2 text-xs uppercase tracking-[0.3em] text-stage-accent/80">命盘</p>
           <div id="stats-list" class="text-sm"></div>
           <div class="mt-6 border-t border-stage-accent/20 pt-3 text-xs text-stage-ink/70 leading-6">
@@ -55,8 +55,8 @@
           </div>
         </aside>
 
-        <section class="min-h-0 overflow-y-auto rounded-2xl border border-stage-accent/25 bg-stage-panel/85 p-5 shadow-ember backdrop-blur">
-          <div id="game-view" class="min-h-0 space-y-4"></div>
+        <section class="min-h-0 overflow-hidden rounded-2xl border border-stage-accent/25 bg-stage-panel/85 p-5 shadow-ember backdrop-blur">
+          <div id="game-view" class="h-full min-h-0 space-y-4"></div>
         </section>
       </section>
     </main>
