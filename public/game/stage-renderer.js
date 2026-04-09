@@ -49,7 +49,7 @@ const createChoiceButton = (choice, statTheme) => {
   `;
 };
 
-const buildConicGradient = (items) => {
+const buildMingpanSlices = (items) => {
   const weighted = items.map((item) => ({
     ...item,
     weight: Math.max(1, item.value + 2)
@@ -57,29 +57,49 @@ const buildConicGradient = (items) => {
   const total = weighted.reduce((sum, item) => sum + item.weight, 0);
 
   let cursor = 0;
-  return weighted
+  return weighted.map((item) => {
+    const start = cursor;
+    const delta = (item.weight / total) * 100;
+    cursor += delta;
+    return {
+      ...item,
+      startPercent: start,
+      endPercent: cursor,
+      midPercent: start + delta / 2
+    };
+  });
+};
+
+const buildConicGradient = (items) => {
+  const slices = buildMingpanSlices(items);
+  return slices
     .map((item) => {
-      const start = cursor;
-      const delta = (item.weight / total) * 100;
-      cursor += delta;
-      return `${item.color} ${start.toFixed(2)}% ${cursor.toFixed(2)}%`;
+      return `${item.color} ${item.startPercent.toFixed(2)}% ${item.endPercent.toFixed(2)}%`;
     })
     .join(', ');
 };
 
-const resolveNodeAngles = (items) => {
+const normalizeDegree = (degree) => {
+  let value = degree % 360;
+  if (value < 0) value += 360;
+  return value;
+};
+
+const shortestDegreeDelta = (target, current) => {
+  let delta = target - current;
+  while (delta > 180) delta -= 360;
+  while (delta < -180) delta += 360;
+  return delta;
+};
+
+const resolveNodeLayout = (items) => {
   if (!items.length) return [];
-  const base = items.map((item) => -180 + (typeof item.barMid === 'number' ? item.barMid : 50) * 3.6);
-  const allSame = base.every((angle) => Math.abs(angle - base[0]) < 0.0001);
-
-  // Initial all-zero/equal state fallback: spread evenly to avoid overlap.
-  if (allSame) {
-    return items.map((_, idx) => -90 + (360 / items.length) * idx);
-  }
-
-  const minGap = 20;
+  const slices = buildMingpanSlices(items);
+  const base = slices.map((slice) => normalizeDegree(-90 + slice.midPercent * 3.6));
   const points = base.map((angle, index) => ({ angle, index }));
-  for (let iter = 0; iter < 10; iter += 1) {
+  const minGap = 24;
+
+  for (let iter = 0; iter < 14; iter += 1) {
     points.sort((a, b) => a.angle - b.angle);
     for (let i = 1; i < points.length; i += 1) {
       const prev = points[i - 1];
@@ -91,26 +111,52 @@ const resolveNodeAngles = (items) => {
         curr.angle += push;
       }
     }
+
+    const first = points[0];
+    const last = points[points.length - 1];
+    const wrapDiff = first.angle + 360 - last.angle;
+    if (wrapDiff < minGap) {
+      const push = (minGap - wrapDiff) / 2;
+      first.angle += push;
+      last.angle -= push;
+    }
+
     points.forEach((point) => {
-      point.angle += (base[point.index] - point.angle) * 0.18;
+      const target = base[point.index];
+      point.angle += shortestDegreeDelta(target, point.angle) * 0.16;
+      point.angle = normalizeDegree(point.angle);
     });
   }
 
-  const result = Array(items.length).fill(0);
-  points.forEach((point) => {
-    result[point.index] = point.angle;
+  points.sort((a, b) => a.angle - b.angle);
+  const lookup = new Map(points.map((point, orderIndex) => [point.index, { ...point, orderIndex }]));
+
+  return items.map((_, index) => {
+    const current = lookup.get(index);
+    const prev = points[(current.orderIndex - 1 + points.length) % points.length];
+    const next = points[(current.orderIndex + 1) % points.length];
+    const prevGap = normalizeDegree(current.angle - prev.angle);
+    const nextGap = normalizeDegree(next.angle - current.angle);
+    const nearGap = Math.min(prevGap, nextGap);
+    const crowded = nearGap < minGap * 1.18;
+    const lane = current.orderIndex % 2 === 0 ? 1 : -1;
+    const radius = crowded ? 37 + lane * 4 : 37;
+    return {
+      angle: current.angle,
+      radius
+    };
   });
-  return result;
 };
 
 const createOrbitalNodes = (items) => {
-  const angles = resolveNodeAngles(items);
+  const nodes = resolveNodeLayout(items);
   return items
     .map((item, index) => {
-      const angle = angles[index];
+      const angle = nodes[index]?.angle ?? 0;
+      const radius = nodes[index]?.radius ?? 37;
       const rad = (angle * Math.PI) / 180;
-      const x = 50 + Math.cos(rad) * 37;
-      const y = 50 + Math.sin(rad) * 37;
+      const x = 50 + Math.cos(rad) * radius;
+      const y = 50 + Math.sin(rad) * radius;
 
       return `
        <div class="absolute -translate-x-1/2 -translate-y-1/2 rounded-lg border px-2 py-1 text-center backdrop-blur-sm"
