@@ -126,14 +126,14 @@ body.ending-cinematic-mode > main > section > aside {
   filter: blur(1.2px);
 }
 .story-line-speaker {
-  margin-bottom: 6px;
-  font-size: 12px;
+  margin-bottom: 4px;
+  font-size: 11px;
   letter-spacing: 0.18em;
   color: rgba(225, 177, 106, 0.9);
 }
 .story-line-text {
   margin: 0;
-  line-height: 1.9;
+  line-height: 1.72;
   color: rgba(244, 232, 211, 0.94);
   text-wrap: pretty;
   word-break: normal;
@@ -162,10 +162,14 @@ body.ending-cinematic-mode > main > section > aside {
   padding-left: 10px;
 }
 .story-line--dialogue {
-  border-left: 3px solid rgba(95, 214, 191, 0.64);
-  background: linear-gradient(90deg, rgba(95, 214, 191, 0.14), transparent 52%);
+  border-left: 3px solid rgba(225, 177, 106, 0.55);
+  background: linear-gradient(90deg, rgba(225, 177, 106, 0.11), transparent 52%);
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 8px 10px;
+}
+.story-line--dialogue-king {
+  border-left-color: rgba(95, 214, 191, 0.7);
+  background: linear-gradient(90deg, rgba(95, 214, 191, 0.16), transparent 52%);
 }
 .story-line--verse {
   border: 1px solid rgba(225, 177, 106, 0.32);
@@ -189,7 +193,7 @@ body.ending-cinematic-mode > main > section > aside {
   max-width: 86%;
   border-right: 3px solid rgba(225, 177, 106, 0.7);
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: linear-gradient(270deg, rgba(225, 177, 106, 0.16), transparent 56%);
 }
 .story-line--answer .story-line-speaker {
