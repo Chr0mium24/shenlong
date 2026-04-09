@@ -1,22 +1,5 @@
 const clone = (value) => structuredClone(value);
 const ENDING_TRANSITION_NEXT = '__resume_pending_ending__';
-const DIALOGUE_VERBS = [
-  '问',
-  '答',
-  '怒道',
-  '笑骂',
-  '说道',
-  '高喊',
-  '叹',
-  '道',
-  '夸',
-  '冷笑',
-  '点点头',
-  '长叹',
-  '哄笑',
-  '起哄',
-  '接话'
-];
 
 export class StoryEngine {
   #pack;
@@ -237,75 +220,15 @@ export class StoryEngine {
         };
       }
 
-      return this.#parseLineCue(node.id, line, index, cast);
+      return {
+        id: `${node.id}-line-${index}`,
+        text: String(line || ''),
+        style: 'narration',
+        speaker: null,
+        speed: 1,
+        portrait: null
+      };
     });
-  }
-
-  #parseLineCue(nodeId, line, index, cast) {
-    const text = String(line || '').trim();
-    const cue = {
-      id: `${nodeId}-line-${index}`,
-      text,
-      style: 'narration',
-      speaker: null,
-      speed: 1,
-      portrait: null
-    };
-
-    if (!text) return cue;
-
-    if (/^【.+】$/.test(text)) {
-      cue.style = 'verse';
-      cue.speed = 1.2;
-      return cue;
-    }
-
-    if (/^\[.+\]/.test(text)) {
-      cue.style = 'note';
-      cue.speed = 1.1;
-    }
-
-    const direct = text.match(/^([^：]{1,14})(?:（[^）]+）)?[:：]\s*(.+)$/);
-    if (direct) {
-      const speaker = direct[1].trim();
-      const content = direct[2].trim();
-      if (this.#isLikelySpeaker(speaker, cast) && (/^“.+”$/.test(content) || /^「.+」$/.test(content) || content.length <= 24)) {
-        cue.style = 'dialogue';
-        cue.speaker = speaker;
-        cue.text = content;
-        cue.speed = 1.3;
-        cue.portrait = this.#resolvePortrait(cue.speaker, cast);
-        return cue;
-      }
-    }
-
-    const dialogueByVerb = new RegExp(`^([^，。：“”]{1,14})(?:${DIALOGUE_VERBS.join('|')})[:：]?`);
-    const verbMatch = text.match(dialogueByVerb);
-    if (verbMatch && /“.+”/.test(text)) {
-      cue.style = 'dialogue';
-      cue.speaker = verbMatch[1].trim();
-      const quote = text.match(/“([^”]+)”/);
-      cue.text = quote ? `“${quote[1]}”` : text;
-      cue.speed = 1.25;
-      cue.portrait = this.#resolvePortrait(cue.speaker, cast);
-      return cue;
-    }
-
-    if (/^“.+”$/.test(text)) {
-      cue.style = 'dialogue';
-      cue.speed = 1.18;
-    }
-
-    return cue;
-  }
-
-  #isLikelySpeaker(speaker, cast) {
-    if (!speaker) return false;
-    if (speaker.length > 4) return false;
-    if (/[，。！？；、\s]/.test(speaker)) return false;
-    if (/(终于|明白|知道|看着|想着|觉得|忽然|突然|只是|不过)/.test(speaker)) return false;
-    if (this.#resolvePortrait(speaker, cast)) return true;
-    return /^(你|我|他|她|寡人|本宫|奴婢|宫女|侍女|丫鬟|将军|大王|公主|众人|左右|小兵|兵卒)$/.test(speaker);
   }
 
   #resolvePortrait(speaker, cast) {
