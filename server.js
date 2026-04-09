@@ -73,6 +73,10 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ error: 'internal_server_error' });
 });
 
+app.use('/api', (_req, res) => {
+  res.status(404).json({ error: 'api_not_found' });
+});
+
 app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

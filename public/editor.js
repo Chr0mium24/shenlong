@@ -25,6 +25,24 @@ const setStatus = (text) => {
   statusEl.textContent = text;
 };
 
+const readJsonResponse = async (response, label) => {
+  const contentType = response.headers.get('content-type') || '';
+  if (!response.ok) {
+    let detail = '';
+    try {
+      detail = await response.text();
+    } catch {
+      detail = '';
+    }
+    throw new Error(`${label}失败（${response.status}）${detail ? `: ${detail.slice(0, 120)}` : ''}`);
+  }
+  if (!contentType.includes('application/json')) {
+    const body = await response.text();
+    throw new Error(`${label}返回非 JSON（content-type=${contentType || 'unknown'}）: ${body.slice(0, 120)}`);
+  }
+  return response.json();
+};
+
 const collectCandidates = (nodes) => {
   const result = [];
   (nodes || []).forEach((node) => {
@@ -214,11 +232,8 @@ const applyInteractiveUpdate = (target) => {
 
 const loadFromServer = async () => {
   const [packRes, cueRes] = await Promise.all([fetch('/api/story'), fetch('/api/manual-cues')]);
-  if (!packRes.ok) throw new Error('加载故事失败');
-  if (!cueRes.ok) throw new Error('加载配置失败');
-
-  const pack = await packRes.json();
-  const cues = await cueRes.json();
+  const pack = await readJsonResponse(packRes, '加载故事');
+  const cues = await readJsonResponse(cueRes, '加载配置');
   const candidates = collectCandidates(pack.nodes);
   const draft = getDraft();
 
@@ -240,10 +255,7 @@ const saveToServer = async () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   });
-  if (!res.ok) {
-    throw new Error('保存失败');
-  }
-  const result = await res.json();
+  const result = await readJsonResponse(res, '保存配置');
   setStatus(`服务器保存成功，共 ${result.count} 条。`);
 };
 
