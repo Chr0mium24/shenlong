@@ -67,12 +67,47 @@ const buildConicGradient = (items) => {
     .join(', ');
 };
 
+const resolveNodeAngles = (items) => {
+  if (!items.length) return [];
+  const base = items.map((item) => -180 + (typeof item.barMid === 'number' ? item.barMid : 50) * 3.6);
+  const allSame = base.every((angle) => Math.abs(angle - base[0]) < 0.0001);
+
+  // Initial all-zero/equal state fallback: spread evenly to avoid overlap.
+  if (allSame) {
+    return items.map((_, idx) => -90 + (360 / items.length) * idx);
+  }
+
+  const minGap = 20;
+  const points = base.map((angle, index) => ({ angle, index }));
+  for (let iter = 0; iter < 10; iter += 1) {
+    points.sort((a, b) => a.angle - b.angle);
+    for (let i = 1; i < points.length; i += 1) {
+      const prev = points[i - 1];
+      const curr = points[i];
+      const diff = curr.angle - prev.angle;
+      if (diff < minGap) {
+        const push = (minGap - diff) / 2;
+        prev.angle -= push;
+        curr.angle += push;
+      }
+    }
+    points.forEach((point) => {
+      point.angle += (base[point.index] - point.angle) * 0.18;
+    });
+  }
+
+  const result = Array(items.length).fill(0);
+  points.forEach((point) => {
+    result[point.index] = point.angle;
+  });
+  return result;
+};
+
 const createOrbitalNodes = (items) => {
+  const angles = resolveNodeAngles(items);
   return items
     .map((item, index) => {
-      // Dynamic placement: derive each node from its stat bar midpoint.
-      const mid = typeof item.barMid === 'number' ? item.barMid : 50;
-      const angle = -180 + mid * 3.6 + (index - 2) * 6;
+      const angle = angles[index];
       const rad = (angle * Math.PI) / 180;
       const x = 50 + Math.cos(rad) * 37;
       const y = 50 + Math.sin(rad) * 37;
@@ -276,7 +311,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
       return;
     }
 
-    const fadeMs = snapshot.presentation?.linePacing?.fadeMs || 260;
+    const fadeMs = Math.max(80, Math.round((snapshot.presentation?.linePacing?.fadeMs || 260) / 2));
 
     const runCue = (index) => {
       if (token !== playbackToken) return;
@@ -286,15 +321,22 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
         return;
       }
 
-      lineHost.innerHTML = createCueHtml(cue);
-      portraitHost.innerHTML = createPortraitHtml(cue);
+      const cueWrapper = document.createElement('div');
+      cueWrapper.innerHTML = createCueHtml(cue);
+      const lineEl = cueWrapper.firstElementChild;
+      if (lineEl) {
+        lineHost.appendChild(lineEl);
+      }
 
-      const lineEl = lineHost.querySelector('.story-line');
+      if (cue.portrait || cue.speaker) {
+        portraitHost.innerHTML = createPortraitHtml(cue);
+      }
       const portraitEl = portraitHost.querySelector('.portrait-shell--active');
 
       requestAnimationFrame(() => {
         if (lineEl) lineEl.classList.add('is-in');
         if (portraitEl) portraitEl.classList.add('is-in');
+        lineHost.scrollTop = lineHost.scrollHeight;
       });
 
       const holdMs = getCueHoldMs(cue, snapshot.presentation);
@@ -307,12 +349,6 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
         }, holdMs);
         return;
       }
-
-      setTimer(() => {
-        if (token !== playbackToken) return;
-        if (lineEl) lineEl.classList.add('is-out');
-        if (portraitEl) portraitEl.classList.add('is-out');
-      }, holdMs);
 
       setTimer(() => {
         if (token !== playbackToken) return;
@@ -357,7 +393,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
           </div>
         </div>
         <div class="story-stage-panel grid gap-3 rounded-xl border border-stage-accent/15 bg-black/20 p-3 lg:grid-cols-[1fr_220px]">
-          <div data-line-host class="story-line-host min-h-[120px]"></div>
+          <div data-line-host class="story-line-host min-h-[120px] max-h-[56vh] overflow-y-auto pr-1 space-y-2"></div>
           <div data-portrait-host class="portrait-host min-h-[120px]"></div>
         </div>
         <div data-choices class="grid gap-2 pt-2 opacity-0 pointer-events-none transition duration-300">${choices}</div>
