@@ -276,6 +276,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
   let onChoose = () => {};
   let playbackToken = 0;
   let activeTimers = [];
+  let activeAct = null;
 
   const stopPlayback = () => {
     playbackToken += 1;
@@ -291,6 +292,11 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
   gameView.addEventListener('click', (event) => {
     const target = event.target.closest('[data-choice-id]');
     if (!target) return;
+    const choiceBlock = gameView.querySelector('[data-choices]');
+    if (choiceBlock) {
+      choiceBlock.classList.add('opacity-0', 'pointer-events-none');
+      choiceBlock.classList.remove('opacity-100');
+    }
     onChoose(target.dataset.choiceId);
   });
 
@@ -420,6 +426,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
       const token = playbackToken;
       const duration = node.durationMs || snapshot.presentation?.endingTransition?.durationMs || 3600;
       const continueChoice = snapshot.choices[0];
+      activeAct = null;
       document.body.classList.add('ending-cinematic-mode');
       gameView.innerHTML = createEndingCinematicHtml(snapshot, statTheme);
 
@@ -435,25 +442,41 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
     document.body.classList.remove('ending-cinematic-mode');
 
-    const choices = snapshot.choices.map((choice) => createChoiceButton(choice, statTheme)).join('');
+    const shouldRebuildScene =
+      activeAct !== node.act || !gameView.querySelector('[data-line-host]') || !gameView.querySelector('[data-choices]');
 
-    gameView.innerHTML = `
-      <article class="enter-fade space-y-4">
-        <div class="flex flex-wrap items-end justify-between gap-2 border-b border-stage-accent/20 pb-3">
-          <div>
-            <p class="text-xs uppercase tracking-[0.25em] text-stage-accent/80">${escapeHtml(node.act)}</p>
-            <h2 class="text-xl font-semibold text-stage-ink">${escapeHtml(node.title)}</h2>
+    if (shouldRebuildScene) {
+      gameView.innerHTML = `
+        <article class="enter-fade space-y-4">
+          <div class="flex flex-wrap items-end justify-between gap-2 border-b border-stage-accent/20 pb-3">
+            <div>
+              <p data-act-label class="text-xs uppercase tracking-[0.25em] text-stage-accent/80">${escapeHtml(node.act)}</p>
+              <h2 data-node-title class="text-xl font-semibold text-stage-ink">${escapeHtml(node.title)}</h2>
+            </div>
           </div>
-        </div>
-        <div class="story-stage-panel grid gap-3 rounded-xl border border-stage-accent/15 bg-black/20 p-3 lg:grid-cols-[1fr_190px]">
-          <div data-line-host class="story-line-host min-h-[120px] max-h-[56vh] overflow-y-auto pr-1"></div>
-          <div data-portrait-host class="portrait-host min-h-[120px]"></div>
-        </div>
-        <div data-choices class="grid gap-2 pt-2 opacity-0 pointer-events-none transition duration-300">${choices}</div>
-      </article>
-    `;
+          <div class="story-stage-panel grid gap-3 p-1 lg:grid-cols-[1fr_190px]">
+            <div data-line-host class="story-line-host min-h-[120px] max-h-[56vh] overflow-y-auto pr-1"></div>
+            <div data-portrait-host class="portrait-host min-h-[120px]"></div>
+          </div>
+          <div data-choices class="grid gap-2 pt-2 opacity-0 pointer-events-none transition duration-300"></div>
+        </article>
+      `;
+      activeAct = node.act;
+    } else {
+      const actLabel = gameView.querySelector('[data-act-label]');
+      const nodeTitle = gameView.querySelector('[data-node-title]');
+      if (actLabel) actLabel.textContent = node.act;
+      if (nodeTitle) nodeTitle.textContent = node.title;
+    }
 
     const choiceBlock = gameView.querySelector('[data-choices]');
+    const choices = snapshot.choices.map((choice) => createChoiceButton(choice, statTheme)).join('');
+    if (choiceBlock) {
+      choiceBlock.innerHTML = choices;
+      choiceBlock.classList.add('opacity-0', 'pointer-events-none');
+      choiceBlock.classList.remove('opacity-100');
+    }
+
     const showChoices = () => {
       if (!choiceBlock) return;
       choiceBlock.classList.remove('opacity-0', 'pointer-events-none');
