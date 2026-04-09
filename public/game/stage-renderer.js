@@ -213,7 +213,7 @@ const createPlayerChoiceHtml = (text) => {
   const cleaned = stripNumericEffectText(text || '');
   return `
     <div class="story-line story-line--answer">
-      <p class="story-line-answer-tag">你的回答</p>
+      <p class="story-line-answer-tag">你</p>
       <p class="story-line-text">${escapeHtml(cleaned)}</p>
     </div>
   `;
@@ -282,6 +282,19 @@ const createEndingCinematicHtml = (snapshot, statTheme) => {
       </div>
     </div>
   `;
+};
+
+const resolveCuePortrait = (cue, state) => {
+  if (!cue) return cue;
+  const speaker = cue.speaker || '';
+  if (speaker.includes('陈子高') || speaker.includes('子高') || speaker.includes('嫂嫂') || speaker === '你') {
+    const feminine = Number(state?.feminine || 0);
+    return {
+      ...cue,
+      portrait: feminine >= 5 ? '/portraits/当皇后后.png' : '/portraits/陈子高当皇后前.png'
+    };
+  }
+  return cue;
 };
 
 const animateIn = (element, onAfter) => {
@@ -431,7 +444,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
     const runCue = (index) => {
       if (token !== playbackToken) return;
-      const cue = cues[index];
+      const cue = resolveCuePortrait(cues[index], snapshot.state);
       if (!cue) {
         showChoices();
         return;

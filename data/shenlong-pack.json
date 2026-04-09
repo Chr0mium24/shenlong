@@ -41,7 +41,7 @@
         "aliases": [
           "临川王"
         ],
-        "portrait": "/portraits/king.svg"
+        "portrait": "/portraits/当皇后后.png"
       },
       {
         "id": "zigao",
@@ -50,7 +50,7 @@
           "子高",
           "嫂嫂"
         ],
-        "portrait": "/portraits/zigao.svg"
+        "portrait": "/portraits/陈子高当皇后前.png"
       },
       {
         "id": "princess",
@@ -58,7 +58,7 @@
         "aliases": [
           "公主"
         ],
-        "portrait": "/portraits/princess.svg"
+        "portrait": "/portraits/玉华公主.png"
       },
       {
         "id": "general",
@@ -70,7 +70,7 @@
           "小兵",
           "兵卒"
         ],
-        "portrait": "/portraits/general.svg"
+        "portrait": null
       }
     ]
   },
