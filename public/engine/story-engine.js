@@ -1,5 +1,6 @@
 const clone = (value) => structuredClone(value);
 const ENDING_TRANSITION_NEXT = '__resume_pending_ending__';
+const DIALOGUE_VERBS = ['问', '答', '怒道', '笑骂', '说道', '高喊', '叹', '道', '夸', '冷笑', '点点头', '长叹'];
 
 export class StoryEngine {
   #pack;
@@ -100,7 +101,9 @@ export class StoryEngine {
       title: this.#pack.title,
       stats: this.#pack.stats,
       statOrder: this.#pack.statOrder || Object.keys(this.#pack.stats || {}),
+      presentation: clone(this.#pack.presentation || {}),
       node,
+      lineCues: this.#buildLineCues(node),
       choices: this.getVisibleChoices(node),
       state: clone(this.#state),
       history: clone(this.#history)
@@ -184,5 +187,86 @@ export class StoryEngine {
         }
       ]
     };
+  }
+
+  #buildLineCues(node) {
+    const lines = Array.isArray(node.lines) ? node.lines : [];
+    const cast = this.#pack.presentation?.cast || [];
+
+    return lines.map((line, index) => {
+      if (typeof line === 'object' && line !== null) {
+        return {
+          id: line.id || `${node.id}-line-${index}`,
+          text: line.text || '',
+          style: line.style || 'narration',
+          speaker: line.speaker || null,
+          speed: line.speed || 1,
+          portrait: line.portrait || null
+        };
+      }
+
+      return this.#parseLineCue(node.id, line, index, cast);
+    });
+  }
+
+  #parseLineCue(nodeId, line, index, cast) {
+    const text = String(line || '').trim();
+    const cue = {
+      id: `${nodeId}-line-${index}`,
+      text,
+      style: 'narration',
+      speaker: null,
+      speed: 1,
+      portrait: null
+    };
+
+    if (!text) return cue;
+
+    if (/^【.+】$/.test(text)) {
+      cue.style = 'verse';
+      cue.speed = 1.2;
+      return cue;
+    }
+
+    if (/^\[.+\]/.test(text)) {
+      cue.style = 'note';
+      cue.speed = 1.1;
+    }
+
+    const direct = text.match(/^([^：]{1,14})(?:（[^）]+）)?[:：]\s*(.+)$/);
+    if (direct) {
+      cue.style = 'dialogue';
+      cue.speaker = direct[1].trim();
+      cue.speed = 1.3;
+      cue.portrait = this.#resolvePortrait(cue.speaker, cast);
+      return cue;
+    }
+
+    const dialogueByVerb = new RegExp(`^([^，。：“”]{1,14})(?:${DIALOGUE_VERBS.join('|')})[:：]?`);
+    const verbMatch = text.match(dialogueByVerb);
+    if (verbMatch && /“.+”/.test(text)) {
+      cue.style = 'dialogue';
+      cue.speaker = verbMatch[1].trim();
+      cue.speed = 1.25;
+      cue.portrait = this.#resolvePortrait(cue.speaker, cast);
+      return cue;
+    }
+
+    if (/^“.+”$/.test(text)) {
+      cue.style = 'dialogue';
+      cue.speed = 1.18;
+    }
+
+    return cue;
+  }
+
+  #resolvePortrait(speaker, cast) {
+    if (!speaker || !Array.isArray(cast)) return null;
+    const target = cast.find((item) => {
+      const aliases = Array.isArray(item.aliases) ? item.aliases : [];
+      const keys = [item.name, ...aliases].filter(Boolean);
+      return keys.some((key) => speaker.includes(key) || key.includes(speaker));
+    });
+    return target?.portrait || null;
   }
 }

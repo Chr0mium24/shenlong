@@ -19,6 +19,41 @@ export const shenlongPack = {
     mask: 0,
     feminine: 0
   },
+  presentation: {
+    linePacing: {
+      narrationMs: 1200,
+      dialogueMs: 1650,
+      verseMs: 1850,
+      noteMs: 1400,
+      fadeMs: 260
+    },
+    cast: [
+      {
+        id: 'king',
+        name: '大王',
+        aliases: ['临川王'],
+        portrait: '/portraits/king.svg'
+      },
+      {
+        id: 'zigao',
+        name: '陈子高',
+        aliases: ['子高', '嫂嫂'],
+        portrait: '/portraits/zigao.svg'
+      },
+      {
+        id: 'princess',
+        name: '玉华公主',
+        aliases: ['公主'],
+        portrait: '/portraits/princess.svg'
+      },
+      {
+        id: 'general',
+        name: '将军',
+        aliases: [],
+        portrait: '/portraits/general.svg'
+      }
+    ]
+  },
   endingTransition: {
     act: '终幕',
     title: '戏台之下',
