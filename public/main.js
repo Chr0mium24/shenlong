@@ -1,6 +1,6 @@
 import { StoryEngine } from './engine/story-engine.js';
 import { createStageRenderer } from './game/stage-renderer.js';
-import { statAlias } from './game/shenlong-theme.js';
+import { statTheme } from './game/shenlong-theme.js';
 
 const gameView = document.getElementById('game-view');
 const statsList = document.getElementById('stats-list');
@@ -16,7 +16,7 @@ const init = async () => {
     gameView,
     statsList,
     titleEl,
-    statAlias
+    statTheme
   });
 
   renderer.onChoose((choiceId) => {

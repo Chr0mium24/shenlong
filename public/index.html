@@ -42,6 +42,12 @@
       .enter-fade {
         animation: riseIn 420ms ease-out;
       }
+      .mingpan-rotor {
+        animation: slowSpin 24s linear infinite;
+      }
+      .choice-btn:hover .choice-omen {
+        filter: saturate(1.2);
+      }
       @keyframes riseIn {
         from {
           opacity: 0;
@@ -50,6 +56,14 @@
         to {
           opacity: 1;
           transform: translateY(0);
+        }
+      }
+      @keyframes slowSpin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
         }
       }
     </style>
@@ -69,7 +83,7 @@
       <section class="grid flex-1 gap-4 lg:grid-cols-[280px_1fr]">
         <aside class="rounded-2xl border border-stage-accent/25 bg-stage-panel/80 p-4 shadow-ember backdrop-blur">
           <p class="mb-2 text-xs uppercase tracking-[0.3em] text-stage-accent/80">命盘</p>
-          <ul id="stats-list" class="space-y-2 text-sm"></ul>
+          <div id="stats-list" class="text-sm"></div>
           <div class="mt-6 border-t border-stage-accent/20 pt-3 text-xs text-stage-ink/70 leading-6">
             一念生，一念灭。你在宫闱中的每次应答，都在改写戏台落幕的方向。
           </div>
