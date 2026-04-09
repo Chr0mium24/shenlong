@@ -4,6 +4,13 @@ body {
     radial-gradient(circle at 78% 10%, rgba(225, 177, 106, 0.2), transparent 40%),
     linear-gradient(135deg, #0f0a07 0%, #170d08 55%, #2b1711 100%);
 }
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 .enter-fade {
   animation: riseIn 420ms ease-out;
 }
