@@ -284,6 +284,21 @@ const createEndingCinematicHtml = (snapshot, statTheme) => {
   `;
 };
 
+const animateIn = (element, onAfter) => {
+  if (!element) return;
+  element.classList.remove('is-in');
+  // Force style flush so transition always starts from the initial state.
+  // Without this, some browsers may skip interpolation when DOM updates are batched.
+  // eslint-disable-next-line no-unused-expressions
+  element.offsetWidth;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      element.classList.add('is-in');
+      if (typeof onAfter === 'function') onAfter();
+    });
+  });
+};
+
 export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme }) => {
   let onChoose = () => {};
   let playbackToken = 0;
@@ -312,8 +327,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
       const answerEl = answerWrapper.firstElementChild;
       if (answerEl) {
         lineHost.appendChild(answerEl);
-        requestAnimationFrame(() => {
-          answerEl.classList.add('is-in');
+        animateIn(answerEl, () => {
           lineHost.scrollTop = lineHost.scrollHeight;
         });
       }
@@ -435,11 +449,10 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
       }
       const portraitEl = portraitHost.querySelector('.portrait-shell--active');
 
-      requestAnimationFrame(() => {
-        if (lineEl) lineEl.classList.add('is-in');
-        if (portraitEl) portraitEl.classList.add('is-in');
+      animateIn(lineEl, () => {
         lineHost.scrollTop = lineHost.scrollHeight;
       });
+      animateIn(portraitEl);
 
       const holdMs = getCueHoldMs(cue, snapshot.presentation);
       const hasNext = index < cues.length - 1;
