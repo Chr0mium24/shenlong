@@ -1,4 +1,8 @@
 body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   background:
     radial-gradient(circle at 20% 15%, rgba(159, 46, 46, 0.25), transparent 38%),
     radial-gradient(circle at 78% 10%, rgba(225, 177, 106, 0.2), transparent 40%),
@@ -21,6 +25,10 @@ body {
 }
 .choice-btn:hover .choice-omen {
   filter: saturate(1.2);
+}
+.choice-btn {
+  min-height: 58px;
+  touch-action: manipulation;
 }
 body.ending-cinematic-mode {
   overflow: hidden;
@@ -336,6 +344,34 @@ body.ending-cinematic-mode > main > section > aside {
   margin: 0;
   font-size: 12px;
   color: rgba(244, 232, 211, 0.6);
+}
+@media (max-width: 1023px) {
+  .story-line-text {
+    line-height: 1.62;
+  }
+  .story-line--dialogue {
+    padding: 7px 9px;
+  }
+  .story-line-host {
+    scrollbar-width: none;
+  }
+  .story-line-host::-webkit-scrollbar {
+    display: none;
+  }
+  .mingpan-brief {
+    padding: 7px 8px;
+  }
+  .mingpan-brief-omen {
+    margin-top: 4px;
+    font-size: 11px;
+  }
+  .mingpan-bead {
+    font-size: 10px;
+    gap: 5px;
+  }
+  .mingpan-history {
+    display: none;
+  }
 }
 @keyframes riseIn {
   from {

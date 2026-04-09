@@ -42,7 +42,7 @@ const createChoiceButton = (choice, statTheme) => {
     : '';
 
   return `
-    <button data-choice-id="${choice.id}" class="choice-btn rounded-xl border border-stage-accent/35 bg-stage-panel/70 px-4 py-3 text-left text-sm transition hover:-translate-y-0.5 hover:border-stage-accent hover:bg-stage-accent/10">
+    <button data-choice-id="${choice.id}" class="choice-btn rounded-xl border border-stage-accent/35 bg-stage-panel/70 px-3 py-2.5 text-left text-[13px] transition hover:-translate-y-0.5 hover:border-stage-accent hover:bg-stage-accent/10 sm:px-4 sm:py-3 sm:text-sm">
       <p class="leading-6 text-stage-ink/95">${escapeHtml(cleanedText)}</p>
       ${omenHtml}
     </button>
@@ -392,8 +392,8 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
       .join('');
 
     statsList.innerHTML = `
-      <div class="space-y-3">
-        <div class="relative mx-auto h-56 w-56">
+      <div class="space-y-2 lg:space-y-3">
+        <div class="relative mx-auto h-40 w-40 sm:h-48 sm:w-48 lg:h-56 lg:w-56">
           <div class="mingpan-rotor absolute inset-2 rounded-full opacity-45 blur-xl" style="background:conic-gradient(${ringGradient});"></div>
           <div class="absolute inset-4 rounded-full border border-stage-accent/20 bg-black/45"></div>
           <div class="absolute inset-7 rounded-full border border-stage-accent/15" style="background:conic-gradient(${ringGradient});opacity:0.7;"></div>
@@ -401,7 +401,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
             <div class="flex h-full items-center justify-center text-center">
               <div>
                 <p class="text-xs tracking-[0.25em] text-stage-accent/80">命盘</p>
-                <p class="mt-1 text-sm text-stage-ink/90">五曜流转</p>
+                <p class="mt-1 text-xs text-stage-ink/90 sm:text-sm">五曜流转</p>
               </div>
             </div>
           </div>
@@ -508,18 +508,18 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
     if (shouldRebuildScene) {
       gameView.innerHTML = `
-        <article class="enter-fade flex h-full min-h-0 flex-col gap-4 overflow-hidden">
+        <article class="enter-fade flex h-full min-h-0 flex-col gap-3 overflow-hidden lg:gap-4">
           <div class="flex flex-wrap items-end justify-between gap-2 border-b border-stage-accent/20 pb-3">
             <div>
               <p data-act-label class="text-xs uppercase tracking-[0.25em] text-stage-accent/80">${escapeHtml(node.act)}</p>
-              <h2 data-node-title class="text-xl font-semibold text-stage-ink">${escapeHtml(node.title)}</h2>
+              <h2 data-node-title class="text-lg font-semibold text-stage-ink sm:text-xl">${escapeHtml(node.title)}</h2>
             </div>
           </div>
-          <div class="story-stage-panel grid min-h-0 flex-1 gap-3 overflow-hidden p-1 lg:grid-cols-[1fr_190px]">
-            <div data-line-host class="story-line-host no-scrollbar h-full min-h-0 overflow-y-auto pr-1"></div>
-            <div data-portrait-host class="portrait-host min-h-0"></div>
+          <div class="story-stage-panel grid min-h-0 flex-1 gap-2 overflow-hidden p-0 lg:gap-3 lg:p-1 lg:grid-cols-[1fr_190px]">
+            <div data-line-host class="story-line-host no-scrollbar h-full min-h-0 overflow-y-auto pr-0 lg:pr-1"></div>
+            <div data-portrait-host class="portrait-host hidden min-h-0 lg:block"></div>
           </div>
-          <div data-choices class="grid min-h-[156px] shrink-0 gap-2 pt-2 invisible pointer-events-none"></div>
+          <div data-choices class="grid min-h-[112px] shrink-0 gap-2 pt-2 sm:min-h-[132px] lg:min-h-[156px] invisible pointer-events-none"></div>
         </article>
       `;
       activeAct = node.act;

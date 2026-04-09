@@ -34,28 +34,28 @@
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body class="h-screen overflow-hidden text-stage-ink font-serifcn">
-    <main class="mx-auto flex h-full w-full max-w-7xl flex-col gap-4 overflow-hidden px-4 py-6 lg:px-8">
-      <header class="flex flex-col justify-between gap-3 rounded-2xl border border-stage-accent/30 bg-stage-panel/80 p-4 shadow-ember backdrop-blur md:flex-row md:items-center">
+  <body class="overflow-hidden text-stage-ink font-serifcn">
+    <main class="mx-auto flex h-full w-full max-w-7xl flex-col gap-3 overflow-hidden px-3 py-4 lg:gap-4 lg:px-8 lg:py-6">
+      <header class="flex flex-col justify-between gap-2 rounded-2xl border border-stage-accent/30 bg-stage-panel/80 p-3 shadow-ember backdrop-blur md:flex-row md:items-center lg:p-4">
         <div>
           <p class="text-xs tracking-[0.3em] text-stage-accent/90">INTERACTIVE STAGE</p>
-          <h1 id="game-title" class="text-2xl font-semibold text-stage-ink">男皇后：戏台浮梦</h1>
+          <h1 id="game-title" class="text-xl font-semibold text-stage-ink sm:text-2xl">男皇后：戏台浮梦</h1>
         </div>
-        <button id="restart-btn" class="rounded-lg border border-stage-blood/50 px-3 py-1.5 text-sm text-stage-ink transition hover:bg-stage-blood/20">
+        <button id="restart-btn" class="rounded-lg border border-stage-blood/50 px-3 py-1.5 text-xs text-stage-ink transition hover:bg-stage-blood/20 sm:text-sm">
           再入此梦
         </button>
       </header>
 
-      <section class="grid min-h-0 flex-1 gap-4 overflow-hidden lg:grid-cols-[280px_1fr]">
-        <aside class="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-stage-accent/25 bg-stage-panel/80 p-4 shadow-ember backdrop-blur">
+      <section class="grid min-h-0 flex-1 grid-rows-[minmax(0,34vh)_minmax(0,1fr)] gap-3 overflow-hidden lg:gap-4 lg:grid-cols-[280px_1fr] lg:grid-rows-1">
+        <aside class="flex min-h-0 max-h-full flex-col overflow-hidden rounded-2xl border border-stage-accent/25 bg-stage-panel/80 p-3 shadow-ember backdrop-blur lg:p-4">
           <p class="mb-2 text-xs uppercase tracking-[0.3em] text-stage-accent/80">命盘</p>
-          <div id="stats-list" class="min-h-0 flex-1 text-sm"></div>
+          <div id="stats-list" class="no-scrollbar min-h-0 flex-1 overflow-y-auto text-sm"></div>
           <div class="mt-4 hidden border-t border-stage-accent/20 pt-3 text-xs leading-6 text-stage-ink/70 2xl:block">
             一念生，一念灭。你在宫闱中的每次应答，都在改写戏台落幕的方向。
           </div>
         </aside>
 
-        <section class="min-h-0 overflow-hidden rounded-2xl border border-stage-accent/25 bg-stage-panel/85 p-5 shadow-ember backdrop-blur">
+        <section class="min-h-0 overflow-hidden rounded-2xl border border-stage-accent/25 bg-stage-panel/85 p-3 shadow-ember backdrop-blur lg:p-5">
           <div id="game-view" class="h-full min-h-0 space-y-4"></div>
         </section>
       </section>
