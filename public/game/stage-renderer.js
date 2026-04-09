@@ -220,22 +220,13 @@ const createPlayerChoiceHtml = (text) => {
 };
 
 const createPortraitHtml = (cue) => {
-  if (!cue?.portrait && !cue?.speaker) {
+  if (!cue?.portrait) {
     return '<div class="portrait-shell"></div>';
   }
 
-  if (cue.portrait) {
-    return `
-      <div class="portrait-shell portrait-shell--active">
-        <img class="portrait-img" src="${cue.portrait}" alt="${escapeHtml(cue.speaker || '立绘')}" />
-        <p class="portrait-name">${escapeHtml(cue.speaker || '角色')}</p>
-      </div>
-    `;
-  }
-
   return `
-    <div class="portrait-shell portrait-shell--active portrait-shell--fallback">
-      <div class="portrait-fallback">立绘待补</div>
+    <div class="portrait-shell portrait-shell--active">
+      <img class="portrait-img" src="${cue.portrait}" alt="${escapeHtml(cue.speaker || '立绘')}" />
       <p class="portrait-name">${escapeHtml(cue.speaker || '角色')}</p>
     </div>
   `;
@@ -457,9 +448,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
         lineHost.appendChild(lineEl);
       }
 
-      if (cue.portrait || cue.speaker) {
-        portraitHost.innerHTML = createPortraitHtml(cue);
-      }
+      portraitHost.innerHTML = createPortraitHtml(cue);
       const portraitEl = portraitHost.querySelector('.portrait-shell--active');
 
       animateIn(lineEl, () => {
