@@ -9,12 +9,14 @@
 * { box-sizing: border-box; }
 body {
   margin: 0;
+  min-height: 100vh;
   background: radial-gradient(circle at 15% 10%, rgba(159, 46, 46, 0.2), transparent 40%), linear-gradient(135deg, #0f0a07 0%, #1b100c 55%, #281711 100%);
   color: var(--ink);
   font-family: "Noto Serif SC", "Source Han Serif SC", serif;
 }
 .editor-root {
   max-width: 1240px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
   display: grid;
@@ -30,14 +32,20 @@ body {
   align-items: center;
   justify-content: space-between;
 }
+.toolbar-meta {
+  min-width: 0;
+}
 .toolbar h1 {
   margin: 0;
   font-size: 22px;
+  line-height: 1.2;
+  word-break: keep-all;
 }
 .toolbar p {
   margin: 4px 0 0;
   color: var(--muted);
   font-size: 13px;
+  line-height: 1.5;
 }
 .toolbar-actions {
   display: flex;
@@ -54,6 +62,7 @@ body {
   background: rgba(0, 0, 0, 0.2);
   cursor: pointer;
   font-size: 13px;
+  touch-action: manipulation;
 }
 .btn-primary {
   border-color: rgba(95, 214, 191, 0.5);
@@ -144,5 +153,78 @@ textarea {
   opacity: 0.62;
 }
 @media (max-width: 980px) {
-  .fields { grid-template-columns: 1fr 1fr; }
+  .editor-root {
+    padding: 14px;
+  }
+  .toolbar {
+    align-items: flex-start;
+  }
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .editor-root {
+    padding: 10px;
+    gap: 10px;
+  }
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px;
+  }
+  .toolbar h1 {
+    font-size: 20px;
+  }
+  .toolbar p {
+    font-size: 12px;
+  }
+  .toolbar-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
+  }
+  .btn {
+    width: 100%;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .status-bar {
+    font-size: 12px;
+  }
+  .row {
+    padding: 9px;
+    gap: 7px;
+  }
+  .row-head {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .row-key {
+    word-break: break-all;
+  }
+  .source {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .fields {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+  .field-enable {
+    padding-top: 0;
+  }
+}
+@media (max-width: 430px) {
+  .toolbar h1 {
+    font-size: 19px;
+  }
+  .toolbar-actions {
+    grid-template-columns: 1fr;
+  }
 }
