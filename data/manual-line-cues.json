@@ -117,7 +117,7 @@
   },
   "crowned:1": {
     "style": "dialogue",
-    "speaker": "陈子高",
+    "speaker": "你",
     "text": "“我情愿学那梳妆粉黛，着那繁长裙摆，安能辨我是雌雄？”",
     "speed": 1
   },
@@ -129,7 +129,7 @@
   },
   "crowned:3": {
     "style": "dialogue",
-    "speaker": "陈子高",
+    "speaker": "你",
     "text": "“古有女子做得了皇帝，今当有男子披得了凤冠霞帔！”",
     "speed": 1
   },

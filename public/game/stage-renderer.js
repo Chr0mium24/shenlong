@@ -223,12 +223,13 @@ const createPlayerChoiceHtml = (text) => {
 };
 
 const createPortraitHtml = (cue) => {
+  const portraitKey = cue?.portrait || 'none';
   if (!cue?.portrait) {
-    return '<div class="portrait-shell"></div>';
+    return `<div class="portrait-shell" data-portrait-key="${portraitKey}"></div>`;
   }
 
   return `
-    <div class="portrait-shell portrait-shell--active">
+    <div class="portrait-shell portrait-shell--active" data-portrait-key="${escapeHtml(portraitKey)}">
       <img class="portrait-img" src="${cue.portrait}" alt="${escapeHtml(cue.speaker || '立绘')}" />
       <p class="portrait-name">${escapeHtml(cue.speaker || '角色')}</p>
     </div>
@@ -291,16 +292,26 @@ const createEndingFiveQuoteOverlayHtml = () => {
   `;
 };
 
-const COMMAND_SPEED_MULTIPLIER = 50;
+const COMMAND_SPEED_MULTIPLIER = 20;
+
+const getZigaoPortraitByState = (state) => {
+  const feminine = Number(state?.feminine || 0);
+  return feminine >= 5 ? 'portraits/陈子高当皇后后.png' : 'portraits/陈子高当皇后前.png';
+};
 
 const resolveCuePortrait = (cue, state) => {
   if (!cue) return cue;
   const speaker = cue.speaker || '';
-  if (speaker.includes('陈子高') || speaker.includes('子高') || speaker.includes('嫂嫂') || speaker === '你') {
-    const feminine = Number(state?.feminine || 0);
+  const normalizedSpeaker = String(speaker).trim();
+  if (
+    normalizedSpeaker.includes('陈子高') ||
+    normalizedSpeaker.includes('子高') ||
+    normalizedSpeaker.includes('嫂嫂') ||
+    normalizedSpeaker === '你'
+  ) {
     return {
       ...cue,
-      portrait: feminine >= 5 ? 'portraits/陈子高当皇后后.png' : 'portraits/陈子高当皇后前.png'
+      portrait: getZigaoPortraitByState(state)
     };
   }
   return cue;
@@ -333,8 +344,16 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
   let isCommandHeld = false;
   let activeEndingTransition = null;
   let activeEndingQuoteOverlay = null;
+  let latestSnapshot = null;
 
   const getPlaybackSpeedMultiplier = () => (isCommandHeld ? COMMAND_SPEED_MULTIPLIER : 1);
+  const getPortraitFadeOutMs = () => Math.max(20, Math.round(260 / getPlaybackSpeedMultiplier()));
+  const getChoiceCommitDelayMs = () => {
+    const speedMultiplier = getPlaybackSpeedMultiplier();
+    const pacing = latestSnapshot?.presentation?.linePacing || {};
+    const baseDialogueMs = pacing.dialogueMs || 1650;
+    return Math.max(120, Math.round(baseDialogueMs / speedMultiplier));
+  };
 
   const applyPlaybackSpeed = () => {
     document.body.style.setProperty('--playback-speed-multiplier', String(getPlaybackSpeedMultiplier()));
@@ -364,6 +383,47 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
   const setTimer = (fn, ms) => {
     const timer = setTimeout(fn, ms);
     activeTimers.push(timer);
+  };
+
+  let portraitTransitionToken = 0;
+  const showPortraitImmediately = (portraitHost, cue) => {
+    if (!portraitHost) return;
+    portraitTransitionToken += 1;
+    portraitHost.innerHTML = createPortraitHtml(cue);
+    const newEl = portraitHost.querySelector('.portrait-shell');
+    animateIn(newEl);
+  };
+
+  const transitionPortrait = (portraitHost, cue, token) => {
+    if (!portraitHost) return;
+
+    const currentEl = portraitHost.querySelector('.portrait-shell');
+    const nextKey = cue?.portrait || 'none';
+    if (!currentEl) {
+      portraitHost.innerHTML = createPortraitHtml(cue);
+      const newEl = portraitHost.querySelector('.portrait-shell');
+      animateIn(newEl);
+      return;
+    }
+
+    const currentKey = currentEl.dataset.portraitKey || 'none';
+    if (currentKey === nextKey) {
+      currentEl.classList.remove('is-out');
+      currentEl.classList.add('is-in');
+      return;
+    }
+
+    const transitionToken = ++portraitTransitionToken;
+    currentEl.classList.remove('is-in');
+    currentEl.classList.add('is-out');
+
+    setTimer(() => {
+      if (token !== playbackToken) return;
+      if (transitionToken !== portraitTransitionToken) return;
+      portraitHost.innerHTML = createPortraitHtml(cue);
+      const newEl = portraitHost.querySelector('.portrait-shell');
+      animateIn(newEl);
+    }, getPortraitFadeOutMs());
   };
 
   const finishEndingTransition = (choiceId) => {
@@ -423,6 +483,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
     const target = event.target.closest('[data-choice-id]');
     if (!target) return;
     const lineHost = gameView.querySelector('[data-line-host]');
+    const portraitHost = gameView.querySelector('[data-portrait-host]');
     const answerText = target.querySelector('p')?.textContent?.trim() || target.textContent?.trim();
     if (lineHost && answerText) {
       const answerWrapper = document.createElement('div');
@@ -435,11 +496,22 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
         });
       }
     }
+    if (portraitHost) {
+      showPortraitImmediately(
+        portraitHost,
+        {
+          speaker: '你',
+          portrait: getZigaoPortraitByState(latestSnapshot?.state)
+        }
+      );
+    }
     const choiceBlock = gameView.querySelector('[data-choices]');
     if (choiceBlock) {
       choiceBlock.classList.add('invisible', 'pointer-events-none');
     }
-    onChoose(target.dataset.choiceId);
+    setTimer(() => {
+      onChoose(target.dataset.choiceId);
+    }, getChoiceCommitDelayMs());
   });
 
   const renderStats = (snapshot) => {
@@ -548,12 +620,10 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
         lineHost.appendChild(lineEl);
       }
 
-      portraitHost.innerHTML = createPortraitHtml(cue);
-      const portraitEl = portraitHost.querySelector('.portrait-shell--active');
+      transitionPortrait(portraitHost, cue, token);
       animateIn(lineEl, () => {
         lineHost.scrollTop = lineHost.scrollHeight;
       });
-      animateIn(portraitEl);
 
       const speedMultiplier = getPlaybackSpeedMultiplier();
       const holdMs = Math.max(20, Math.round(getCueHoldMs(cue, snapshot.presentation) / speedMultiplier));
@@ -666,6 +736,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
   return {
     render(snapshot) {
+      latestSnapshot = snapshot;
       titleEl.textContent = snapshot.title;
       renderStats(snapshot);
       renderNode(snapshot);
