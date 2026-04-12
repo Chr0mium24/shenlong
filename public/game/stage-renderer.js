@@ -278,6 +278,21 @@ const createEndingCinematicHtml = (snapshot, statTheme) => {
   `;
 };
 
+const createEndingFiveQuoteOverlayHtml = () => {
+  return `
+    <div class="ending-quote-overlay fixed inset-0 z-[95]">
+      <div class="ending-quote-overlay-inner">
+        <p class="ending-quote-text">莫笑台中雌雄假</p>
+        <br />
+        <p class="ending-quote-text">看客同是梦里人</p>
+        <p class="ending-quote-tip">点击任意处继续</p>
+      </div>
+    </div>
+  `;
+};
+
+const COMMAND_SPEED_MULTIPLIER = 50;
+
 const resolveCuePortrait = (cue, state) => {
   if (!cue) return cue;
   const speaker = cue.speaker || '';
@@ -285,7 +300,7 @@ const resolveCuePortrait = (cue, state) => {
     const feminine = Number(state?.feminine || 0);
     return {
       ...cue,
-      portrait: feminine >= 5 ? 'portraits/当皇后后.png' : 'portraits/陈子高当皇后前.png'
+      portrait: feminine >= 5 ? 'portraits/陈子高当皇后后.png' : 'portraits/陈子高当皇后前.png'
     };
   }
   return cue;
@@ -306,22 +321,103 @@ const animateIn = (element, onAfter) => {
   });
 };
 
+const isCommandKeyEvent = (event) => {
+  return event.key === 'Meta' || event.code === 'MetaLeft' || event.code === 'MetaRight';
+};
+
 export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme }) => {
   let onChoose = () => {};
   let playbackToken = 0;
   let activeTimers = [];
   let activeAct = null;
+  let isCommandHeld = false;
+  let activeEndingTransition = null;
+  let activeEndingQuoteOverlay = null;
+
+  const getPlaybackSpeedMultiplier = () => (isCommandHeld ? COMMAND_SPEED_MULTIPLIER : 1);
+
+  const applyPlaybackSpeed = () => {
+    document.body.style.setProperty('--playback-speed-multiplier', String(getPlaybackSpeedMultiplier()));
+  };
+
+  const clearEndingQuoteOverlay = () => {
+    document.body.classList.remove('ending-quote-mode');
+    if (!activeEndingQuoteOverlay) return;
+    const { overlay, onKeydown } = activeEndingQuoteOverlay;
+    if (overlay?.isConnected) {
+      overlay.remove();
+    }
+    if (onKeydown) {
+      window.removeEventListener('keydown', onKeydown);
+    }
+    activeEndingQuoteOverlay = null;
+  };
 
   const stopPlayback = () => {
     playbackToken += 1;
     activeTimers.forEach((timer) => clearTimeout(timer));
     activeTimers = [];
+    activeEndingTransition = null;
+    clearEndingQuoteOverlay();
   };
 
   const setTimer = (fn, ms) => {
     const timer = setTimeout(fn, ms);
     activeTimers.push(timer);
   };
+
+  const finishEndingTransition = (choiceId) => {
+    activeEndingTransition = null;
+    if (choiceId) {
+      onChoose(choiceId);
+    }
+  };
+
+  const showEndingFiveQuoteOverlay = (onDismiss) => {
+    clearEndingQuoteOverlay();
+    document.body.classList.add('ending-quote-mode');
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = createEndingFiveQuoteOverlayHtml();
+    const overlay = wrapper.firstElementChild;
+    if (!overlay) return;
+
+    const dismiss = () => {
+      clearEndingQuoteOverlay();
+      if (typeof onDismiss === 'function') {
+        onDismiss();
+      }
+    };
+    const onKeydown = () => dismiss();
+    overlay.addEventListener('click', dismiss, { once: true });
+    window.addEventListener('keydown', onKeydown, { once: true });
+    activeEndingQuoteOverlay = { overlay, onKeydown };
+    document.body.appendChild(overlay);
+  };
+
+  const handleCommandDown = () => {
+    if (isCommandHeld) return;
+    isCommandHeld = true;
+    applyPlaybackSpeed();
+  };
+
+  const handleCommandUp = () => {
+    isCommandHeld = false;
+    applyPlaybackSpeed();
+  };
+
+  window.addEventListener('keydown', (event) => {
+    if (isCommandKeyEvent(event)) {
+      handleCommandDown();
+    }
+  });
+  window.addEventListener('keyup', (event) => {
+    if (isCommandKeyEvent(event)) {
+      handleCommandUp();
+    }
+  });
+  window.addEventListener('blur', handleCommandUp);
+  applyPlaybackSpeed();
 
   gameView.addEventListener('click', (event) => {
     const target = event.target.closest('[data-choice-id]');
@@ -438,6 +534,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
     const runCue = (index) => {
       if (token !== playbackToken) return;
+
       const cue = resolveCuePortrait(cues[index], snapshot.state);
       if (!cue) {
         showChoices();
@@ -453,13 +550,14 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
       portraitHost.innerHTML = createPortraitHtml(cue);
       const portraitEl = portraitHost.querySelector('.portrait-shell--active');
-
       animateIn(lineEl, () => {
         lineHost.scrollTop = lineHost.scrollHeight;
       });
       animateIn(portraitEl);
 
-      const holdMs = getCueHoldMs(cue, snapshot.presentation);
+      const speedMultiplier = getPlaybackSpeedMultiplier();
+      const holdMs = Math.max(20, Math.round(getCueHoldMs(cue, snapshot.presentation) / speedMultiplier));
+      const fadeDelayMs = Math.max(10, Math.round(fadeMs / speedMultiplier));
       const hasNext = index < cues.length - 1;
 
       if (!hasNext) {
@@ -473,7 +571,7 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
       setTimer(() => {
         if (token !== playbackToken) return;
         runCue(index + 1);
-      }, holdMs + fadeMs);
+      }, holdMs + fadeDelayMs);
     };
 
     runCue(0);
@@ -485,23 +583,28 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
 
     if (node.kind === 'ending_transition') {
       const token = playbackToken;
-      const duration = node.durationMs || snapshot.presentation?.endingTransition?.durationMs || 3600;
+      const speedMultiplier = getPlaybackSpeedMultiplier();
+      const durationBase = node.durationMs || snapshot.presentation?.endingTransition?.durationMs || 3600;
+      const duration = Math.max(120, Math.round(durationBase / speedMultiplier));
       const continueChoice = snapshot.choices[0];
       activeAct = null;
+      activeEndingTransition = {
+        choiceId: continueChoice?.id || null
+      };
       document.body.classList.add('ending-cinematic-mode');
       gameView.innerHTML = createEndingCinematicHtml(snapshot, statTheme);
 
       setTimer(() => {
         if (token !== playbackToken) return;
         document.body.classList.remove('ending-cinematic-mode');
-        if (continueChoice?.id) {
-          onChoose(continueChoice.id);
-        }
+        finishEndingTransition(continueChoice?.id);
       }, duration);
       return;
     }
 
     document.body.classList.remove('ending-cinematic-mode');
+    activeEndingTransition = null;
+    clearEndingQuoteOverlay();
 
     const shouldRebuildScene =
       activeAct !== node.act || !gameView.querySelector('[data-line-host]') || !gameView.querySelector('[data-choices]');
@@ -546,7 +649,19 @@ export const createStageRenderer = ({ gameView, statsList, titleEl, statTheme })
       }
     };
 
-    playCues(snapshot, showChoices);
+    const showNodeTail = () => {
+      if (node.id !== 'ending_5') {
+        showChoices();
+        return;
+      }
+      const speedMultiplier = getPlaybackSpeedMultiplier();
+      const quoteDelayMs = Math.max(60, Math.round(1000 / speedMultiplier));
+      setTimer(() => {
+        showEndingFiveQuoteOverlay(showChoices);
+      }, quoteDelayMs);
+    };
+
+    playCues(snapshot, showNodeTail);
   };
 
   return {

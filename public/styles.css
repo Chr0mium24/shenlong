@@ -38,6 +38,42 @@ body.ending-cinematic-mode > main > section > aside {
   opacity: 0;
   pointer-events: none;
 }
+body.ending-quote-mode {
+  overflow: hidden;
+}
+body.ending-quote-mode > main > header,
+body.ending-quote-mode > main > section > aside,
+body.ending-quote-mode #game-view > article {
+  opacity: 0;
+  pointer-events: none;
+}
+.ending-quote-overlay {
+  background:
+    radial-gradient(circle at 50% 32%, rgba(225, 177, 106, 0.16), transparent 45%),
+    linear-gradient(180deg, rgba(8, 8, 8, 0.95), rgba(2, 2, 2, 0.98));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: endingQuoteFadeIn 680ms ease-out forwards;
+}
+.ending-quote-overlay-inner {
+  width: min(900px, calc(100vw - 48px));
+  text-align: center;
+}
+.ending-quote-text {
+  margin: 0;
+  color: rgba(247, 235, 216, 0.98);
+  font-size: clamp(34px, 6.2vw, 82px);
+  line-height: 1.36;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 28px rgba(225, 177, 106, 0.24);
+}
+.ending-quote-tip {
+  margin: 24px 0 0;
+  color: rgba(146, 124, 90, 0.62);
+  font-size: clamp(12px, 1.6vw, 17px);
+  letter-spacing: 0.26em;
+}
 .ending-cinematic {
   background: radial-gradient(circle at 50% 18%, rgba(225, 177, 106, 0.08), transparent 40%), #030303;
 }
@@ -45,7 +81,7 @@ body.ending-cinematic-mode > main > section > aside {
   position: absolute;
   inset: 0;
   transform-origin: 50% 58%;
-  animation: endingPullback 4.2s cubic-bezier(0.2, 0.6, 0.25, 1) forwards;
+  animation: endingPullback calc(4.2s / var(--playback-speed-multiplier, 1)) cubic-bezier(0.2, 0.6, 0.25, 1) forwards;
 }
 .ending-cinematic-mingpan-wrap {
   position: absolute;
@@ -61,14 +97,16 @@ body.ending-cinematic-mode > main > section > aside {
   border-radius: 999px;
   opacity: 0.4;
   filter: blur(26px);
-  animation: mingpanShrink 4.2s ease forwards;
+  animation: mingpanShrink calc(4.2s / var(--playback-speed-multiplier, 1)) ease forwards;
 }
 .ending-cinematic-mingpan {
   position: absolute;
   inset: 22px;
   border-radius: 999px;
   border: 1px solid rgba(225, 177, 106, 0.35);
-  animation: mingpanSpin 1.2s linear infinite, mingpanShrink 4.2s ease forwards;
+  animation:
+    mingpanSpin calc(1.2s / var(--playback-speed-multiplier, 1)) linear infinite,
+    mingpanShrink calc(4.2s / var(--playback-speed-multiplier, 1)) ease forwards;
 }
 .ending-cinematic-stage {
   position: absolute;
@@ -90,7 +128,7 @@ body.ending-cinematic-mode > main > section > aside {
   border: 1px solid rgba(245, 234, 215, 0.4);
   background: linear-gradient(180deg, rgba(245, 234, 215, 0.25), rgba(245, 234, 215, 0.08));
   clip-path: polygon(8% 4%, 92% 0, 100% 94%, 12% 100%);
-  animation: paperFloat 2.3s ease-in-out infinite alternate;
+  animation: paperFloat calc(2.3s / var(--playback-speed-multiplier, 1)) ease-in-out infinite alternate;
 }
 .ending-cinematic-paper--left {
   left: 58px;
@@ -117,12 +155,15 @@ body.ending-cinematic-mode > main > section > aside {
   border-radius: 7px 7px 2px 2px;
   background: rgba(0, 0, 0, 0.95);
   opacity: 0;
-  animation: crowdFadeIn 900ms ease-out forwards;
+  animation: crowdFadeIn calc(900ms / var(--playback-speed-multiplier, 1)) ease-out forwards;
 }
 .story-line {
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 260ms ease, transform 260ms ease, filter 260ms ease;
+  transition:
+    opacity calc(260ms / var(--playback-speed-multiplier, 1)) ease,
+    transform calc(260ms / var(--playback-speed-multiplier, 1)) ease,
+    filter calc(260ms / var(--playback-speed-multiplier, 1)) ease;
 }
 .story-line.is-in {
   opacity: 1;
@@ -227,7 +268,9 @@ body.ending-cinematic-mode > main > section > aside {
   height: 100%;
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 260ms ease, transform 260ms ease;
+  transition:
+    opacity calc(260ms / var(--playback-speed-multiplier, 1)) ease,
+    transform calc(260ms / var(--playback-speed-multiplier, 1)) ease;
 }
 .portrait-shell.is-in {
   opacity: 1;
@@ -421,4 +464,8 @@ body.ending-cinematic-mode > main > section > aside {
 @keyframes crowdFadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes endingQuoteFadeIn {
+  from { opacity: 0; filter: blur(5px); }
+  to { opacity: 1; filter: blur(0); }
 }
